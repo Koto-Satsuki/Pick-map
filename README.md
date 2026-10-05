@@ -37,48 +37,42 @@
             z-index: -1;
         }
 
+        /* 固定長方形介面的大小，避免任何尺寸變動或跳動 */
         .container {
             text-align: center;
-            background: rgba(18, 18, 26, 0.82);
-            padding: 35px;
+            background: rgba(18, 18, 26, 0.85);
+            padding: 30px;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            max-width: 650px;
-            width: 100%;
+            width: 520px;
+            height: 560px;
             backdrop-filter: blur(8px);
-            transition: opacity 0.4s ease;
-            opacity: 1;
-        }
-
-        /* 隱藏 UI 時，讓整個卡片內容淡出，但保留卡片本身的框或直接讓內部元素淡出 */
-        .container.hide-ui > *:not(#result) {
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
         }
 
         h1 {
-            margin-bottom: 20px;
-            font-size: 2.2rem;
+            font-size: 2rem;
             letter-spacing: 1px;
             color: #e2e8f0;
-            transition: opacity 0.3s ease;
+            height: 40px;
+            line-height: 40px;
         }
 
         .category-buttons {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-            transition: opacity 0.3s ease;
+            gap: 8px;
         }
         .cat-btn {
             background: rgba(255, 255, 255, 0.06);
             color: #cbd5e1;
             border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 12px;
-            font-size: 1.1rem;
+            padding: 10px;
+            font-size: 1rem;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
@@ -94,74 +88,53 @@
             font-weight: bold;
         }
         
-        /* 結果顯示框：平時在卡片內，抽圖時會移到畫面正中央並帶有淡入淡出 */
+        /* 結果顯示區塊：固定高度與位置，內含淡入動畫 */
         #result {
-            font-size: 2.2rem;
-            margin: 20px 0;
-            min-height: 100px;
+            height: 110px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             color: #fbbf24;
-            word-break: break-all;
             padding: 0 10px;
-            line-height: 1.4;
-            transition: all 0.4s ease;
+            transition: opacity 0.3s ease;
         }
 
-        /* 抽圖中：將結果區塊絕對定位到畫面絕對正中央，並放大有質感 */
-        body.drawing #result {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 100;
-            font-size: 3.2rem;
-            background: rgba(18, 18, 26, 0.9);
-            padding: 40px 60px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-            animation: fadeInOut 0.4s ease;
+        .fade-in {
+            animation: fadeIn 0.25s ease;
         }
 
-        @keyframes fadeInOut {
-            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .result-star {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             color: #60a5fa;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             font-weight: bold;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
         }
         .result-map {
-            font-size: 2.6rem;
+            font-size: 2.2rem;
             color: #fbbf24;
-        }
-        body.drawing .result-star {
-            font-size: 1.6rem;
-        }
-        body.drawing .result-map {
-            font-size: 3.5rem;
+            word-break: break-all;
+            line-height: 1.2;
         }
 
         .action-buttons {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            transition: opacity 0.3s ease;
+            gap: 8px;
         }
 
         .draw-btn {
             background: #2563eb;
             color: white;
             border: none;
-            padding: 14px 20px;
-            font-size: 1.2rem;
+            padding: 12px 20px;
+            font-size: 1.1rem;
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s;
@@ -175,8 +148,8 @@
             background: rgba(255, 255, 255, 0.08);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 12px 15px;
-            font-size: 1.1rem;
+            padding: 10px 15px;
+            font-size: 1rem;
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s;
@@ -340,20 +313,20 @@
             buttons.forEach(btn => btn.classList.remove('active'));
             
             btnElement.classList.add('active');
-            document.getElementById("result").innerText = "已切換圖池，請抽圖";
+            
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerText = "已切換圖池，請抽圖";
+            resultDiv.classList.remove("fade-in");
+            void resultDiv.offsetWidth; // 觸發重繪
+            resultDiv.classList.add("fade-in");
         }
 
         function drawMap() {
             if (isDrawing) return;
             isDrawing = true;
 
-            const container = document.getElementById("mainContainer");
             const resultDiv = document.getElementById("result");
             const flatMaps = getAllMapsWithStar(currentCategory);
-            
-            // 進入抽圖模式：隱藏 UI 並將結果移至正中央
-            container.classList.add("hide-ui");
-            document.body.classList.add("drawing");
             
             let count = 0;
             const interval = setInterval(() => {
@@ -365,14 +338,14 @@
                 if (count > 15) {
                     clearInterval(interval);
                     const finalItem = flatMaps[Math.floor(Math.random() * flatMaps.length)];
-                    resultDiv.innerHTML = `<div class="result-star">${finalItem.star}</div><div class="result-map">${finalItem.name}</div>`;
                     
-                    // 停留 1.2 秒後，帶有淡入效果恢復原狀
-                    setTimeout(() => {
-                        container.classList.remove("hide-ui");
-                        document.body.classList.remove("drawing");
-                        isDrawing = false;
-                    }, 1200);
+                    // 最終結果加上淡入動畫
+                    resultDiv.innerHTML = `<div class="result-star">${finalItem.star}</div><div class="result-map">${finalItem.name}</div>`;
+                    resultDiv.classList.remove("fade-in");
+                    void resultDiv.offsetWidth;
+                    resultDiv.classList.add("fade-in");
+                    
+                    isDrawing = false;
                 }
             }, 60);
         }
