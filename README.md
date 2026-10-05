@@ -14,7 +14,6 @@
             font-family: 'Iansui', sans-serif !important;
         }
         body {
-            /* 使用你提供的背景圖片 */
             background-image: url('https://i.meee.com.tw/sqDHUVl.png');
             background-size: cover;
             background-position: center;
@@ -27,9 +26,9 @@
             align-items: center;
             padding: 20px;
             position: relative;
+            overflow: hidden;
         }
         
-        /* 半透明深色遮罩，完美襯托背景與介面 */
         body::before {
             content: '';
             position: absolute;
@@ -48,12 +47,11 @@
             max-width: 650px;
             width: 100%;
             backdrop-filter: blur(8px);
-            /* 支援淡入淡出的轉場動畫 */
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            transition: opacity 0.4s ease;
             opacity: 1;
         }
 
-        /* 隱藏 UI 時的平滑淡出動畫 */
+        /* 隱藏 UI 時，讓整個卡片內容淡出，但保留卡片本身的框或直接讓內部元素淡出 */
         .container.hide-ui > *:not(#result) {
             opacity: 0;
             pointer-events: none;
@@ -65,14 +63,15 @@
             font-size: 2.2rem;
             letter-spacing: 1px;
             color: #e2e8f0;
+            transition: opacity 0.3s ease;
         }
 
-        /* 三大分類按鈕排版 */
         .category-buttons {
             display: flex;
             flex-direction: column;
             gap: 10px;
             margin-bottom: 20px;
+            transition: opacity 0.3s ease;
         }
         .cat-btn {
             background: rgba(255, 255, 255, 0.06);
@@ -95,28 +94,68 @@
             font-weight: bold;
         }
         
-        /* 結果顯示框 */
+        /* 結果顯示框：平時在卡片內，抽圖時會移到畫面正中央並帶有淡入淡出 */
         #result {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             margin: 20px 0;
-            min-height: 90px;
+            min-height: 100px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #fbbf24; /* 溫潤的金黃色 */
+            color: #fbbf24;
             word-break: break-all;
             padding: 0 10px;
-            transition: opacity 0.3s ease;
+            line-height: 1.4;
+            transition: all 0.4s ease;
         }
 
-        /* 按鈕區群組 */
+        /* 抽圖中：將結果區塊絕對定位到畫面絕對正中央，並放大有質感 */
+        body.drawing #result {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            font-size: 3.2rem;
+            background: rgba(18, 18, 26, 0.9);
+            padding: 40px 60px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            animation: fadeInOut 0.4s ease;
+        }
+
+        @keyframes fadeInOut {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .result-star {
+            font-size: 1.3rem;
+            color: #60a5fa;
+            margin-bottom: 6px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+        .result-map {
+            font-size: 2.6rem;
+            color: #fbbf24;
+        }
+        body.drawing .result-star {
+            font-size: 1.6rem;
+        }
+        body.drawing .result-map {
+            font-size: 3.5rem;
+        }
+
         .action-buttons {
             display: flex;
             flex-direction: column;
             gap: 10px;
+            transition: opacity 0.3s ease;
         }
 
-        /* 開始抽圖按鈕 */
         .draw-btn {
             background: #2563eb;
             color: white;
@@ -132,7 +171,6 @@
             background: #1d4ed8;
         }
 
-        /* 顯示所有地圖按鈕 */
         .list-btn {
             background: rgba(255, 255, 255, 0.08);
             color: white;
@@ -148,7 +186,6 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
-        /* 彈出視窗 */
         .modal {
             display: none;
             position: fixed;
@@ -176,7 +213,6 @@
             color: #fbbf24;
             text-align: center;
         }
-        /* 保留星級排版的清單區塊 */
         .star-group {
             margin-bottom: 15px;
             background: rgba(255, 255, 255, 0.03);
@@ -189,6 +225,7 @@
             color: #60a5fa;
             margin-bottom: 6px;
             font-weight: bold;
+            letter-spacing: 1px;
         }
         .star-maps {
             font-size: 1rem;
@@ -219,14 +256,14 @@
     <div class="container" id="mainContainer">
         <h1>Maps</h1>
         
-        <!-- 三大圖池切換按鈕 -->
         <div class="category-buttons">
             <button class="cat-btn active" onclick="switchCategory('speedLeague', this)">競速聯賽圖池</button>
             <button class="cat-btn" onclick="switchCategory('speedAll', this)">競速全圖</button>
             <button class="cat-btn" onclick="switchCategory('itemList', this)">道具聯賽圖池</button>
+            <button class="cat-btn" onclick="switchCategory('nostalgia', this)">懷舊圖池</button>
         </div>
 
-        <div id="result">請點擊下方按鈕抽圖</div>
+        <div id="result">點擊下方按鈕抽圖</div>
         
         <div class="action-buttons">
             <button class="draw-btn" onclick="drawMap()">開始抽地圖</button>
@@ -234,7 +271,6 @@
         </div>
     </div>
 
-    <!-- 彈出視窗：顯示所有地圖（保留星級與原排版） -->
     <div id="mapModal" class="modal">
         <div class="modal-content">
             <h2 id="modalTitle">地圖清單</h2>
@@ -244,37 +280,41 @@
     </div>
 
     <script>
-        // 資料結構：保留星級分類，方便顯示與抽圖
         const mapPools = {
             speedLeague: {
                 name: "競速聯賽圖池",
                 pools: [
-                    { star: "七星", maps: ["極速空港", "山海畫境"] },
-                    { star: "六星", maps: ["美洲大峽谷", "蘇格蘭場"] },
-                    { star: "五星", maps: ["秋名山", "莫高窟", "亞特蘭蒂斯", "反向亞特蘭蒂斯", "老街工地", "赤城紅葉", "雪境裂淵", "火星基地", "西部礦山"] },
-                    { star: "四星", maps: ["西湖", "長城", "1號公路", "TROY-零號試驗場", "千戶苗寨", "疾風機場", "決戰! 雪山之巔", "夢回古蜀", "極速航天城", "神都千古恆照", "流殤曲水", "端午競渡", "泰坦之巔", "雲湧天門", "心淵"] },
-                    { star: "三星", maps: ["11城", "北海漁場", "TROY-熔煉車間", "一路向黔", "阿爾法總部", "決戰! 海濱之眼", "天宮尋夢", "特洛伊環城", "龍晶湖", "絕色江西", "霧山五行", "浪漫海濱", "夜遊瀟湘", "踏雪尋春", "貓夢浮屋", "天工水城"] }
+                    { star: "★★★★★★★", maps: ["極速空港", "山海畫境"] },
+                    { star: "★★★★★★", maps: ["美洲大峽谷", "蘇格蘭場"] },
+                    { star: "★★★★★", maps: ["秋名山", "莫高窟", "亞特蘭蒂斯", "反向亞特蘭蒂斯", "老街工地", "赤城紅葉", "雪境裂淵", "火星基地", "西部礦山"] },
+                    { star: "★★★★", maps: ["西湖", "長城", "1號公路", "TROY-零號試驗場", "千戶苗寨", "疾風機場", "決戰! 雪山之巔", "夢回古蜀", "極速航天城", "神都千古恆照", "流殤曲水", "端午競渡", "泰坦之巔", "雲湧天門", "心淵"] },
+                    { star: "★★★", maps: ["11城", "北海漁場", "TROY-熔煉車間", "一路向黔", "阿爾法總部", "決戰! 海濱之眼", "天宮尋夢", "特洛伊環城", "龍晶湖", "絕色江西", "霧山五行", "浪漫海濱", "夜遊瀟湘", "踏雪尋春", "貓夢浮屋", "天工水城"] }
                 ]
             },
             speedAll: {
                 name: "競速全圖",
                 pools: [
-                    { star: "七星", maps: ["極速空港", "山海畫境"] },
-                    { star: "六星", maps: ["美洲大峽谷", "蘇格蘭場"] },
-                    { star: "五星", maps: ["秋名山", "莫高窟", "亞特蘭蒂斯", "反向亞特蘭蒂斯", "哈比人之旅", "老街工地", "赤城紅葉", "雪境裂淵", "火星基地", "沁園春", "天空之城", "西部礦山"] },
-                    { star: "四星", maps: ["西湖", "長城", "1號公路", "TROY-零號試驗場", "千戶苗寨", "疾風機場", "決戰! 雪山之巔", "夢回古蜀", "極速航天城", "神都千古恒照", "流殤曲水", "端午競渡", "泰坦之巔", "雲湧天門", "新天鵝堡", "秋之物語", "侏羅紀公園", "花落夏海", "綠野逐風", "桃源劍閣", "人魚島探險"] },
-                    { star: "三星", maps: ["11城", "北海漁場", "TROY-熔煉車間", "一路向黔", "阿爾法總部", "決戰! 海濱之眼", "天宮尋夢", "超弦基地", "特洛伊環城", "龍晶湖", "絕色江西", "伊甸掠影", "霧山五行", "浪漫海濱", "夜遊瀟湘", "踏雪尋春", "反向11城", "月光之城", "時之沙", "情迷法蘭西", "廣寒仙境", "城市網咖", "極地冰鎮", "龍門新春", "洛杉磯", "冰雪企鵝島", "星星火車站", "夜鳴沙都", "電音夢工廠", "幻音城假日", "科隆大教堂", "星夢遊樂園", "炎光王城", "戀戀千陽", "雲遊天府", "霧山楓吟", "京華冬夢", "極星幻域", "黃河萬里奔流", "舊夢碼頭", "熔爐角鬥場", "雲夢澤", "一夢青花", "千年絲路", "時光紀念館", "雪地嘉年華", "沉睡森林", "我們戀愛吧", "雪地大冒險", "聆風鎮", "彩虹風車島", "反向彩虹風車島", "羅馬競技場", "極速列車", "燕子塢"] },
-                    { star: "二星", maps: ["冰川滑雪場", "馬達加斯加", "法老金字塔", "山雪遊龍", "情迷愛琴海", "鵲橋仙境", "飛馳絲路", "霆城新港", "叢林派對", "序列中樞"] },
-                    { star: "一星", maps: ["中國城", "老街管道"] },
-                    { star: "懷舊", maps: ["大壩", "狂鯊水世界", "酥脆奶油谷", "繁花巴比倫", "咕嚕星", "玄門幽谷", "英倫古堡", "鴨鴨水樂園", "糖果不夜城", "蜂之蜜語", "糖果樂園", "小豬部落", "失落遺跡"] }
+                    { star: "★★★★★★★", maps: ["極速空港", "山海畫境"] },
+                    { star: "★★★★★★", maps: ["美洲大峽谷", "蘇格蘭場"] },
+                    { star: "★★★★★", maps: ["秋名山", "莫高窟", "亞特蘭蒂斯", "反向亞特蘭蒂斯", "哈比人之旅", "老街工地", "赤城紅葉", "雪境裂淵", "火星基地", "沁園春", "天空之城", "西部礦山"] },
+                    { star: "★★★★", maps: ["西湖", "長城", "1號公路", "TROY-零號試驗場", "千戶苗寨", "疾風機場", "決戰! 雪山之巔", "夢回古蜀", "極速航天城", "神都千古恒照", "流殤曲水", "端午競渡", "泰坦之巔", "雲湧天門", "新天鵝堡", "秋之物語", "侏羅紀公園", "花落夏海", "綠野逐風", "桃源劍閣", "人魚島探險"] },
+                    { star: "★★★", maps: ["11城", "北海漁場", "TROY-熔煉車間", "一路向黔", "阿爾法總部", "決戰! 海濱之眼", "天宮尋夢", "超弦基地", "特洛伊環城", "龍晶湖", "絕色江西", "伊甸掠影", "霧山五行", "浪漫海濱", "夜遊瀟湘", "踏雪尋春", "反向11城", "月光之城", "時之沙", "情迷法蘭西", "廣寒仙境", "城市網咖", "極地冰鎮", "龍門新春", "洛杉磯", "冰雪企鵝島", "星星火車站", "夜鳴沙都", "電音夢工廠", "幻音城假日", "科隆大教堂", "星夢遊樂園", "炎光王城", "戀戀千陽", "雲遊天府", "霧山楓吟", "京華冬夢", "極星幻域", "黃河萬里奔流", "舊夢碼頭", "熔爐角鬥場", "雲夢澤", "一夢青花", "千年絲路", "時光紀念館", "雪地嘉年華", "沉睡森林", "我們戀愛吧", "雪地大冒險", "聆風鎮", "彩虹風車島", "反向彩虹風車島", "羅馬競技場", "極速列車", "燕子塢"] },
+                    { star: "★★", maps: ["冰川滑雪場", "馬達加斯加", "法老金字塔", "山雪遊龍", "情迷愛琴海", "鵲橋仙境", "飛馳絲路", "霆城新港", "叢林派對", "序列中樞"] },
+                    { star: "★", maps: ["中國城", "老街管道"] }
                 ]
             },
             itemList: {
                 name: "道具聯賽圖池",
                 pools: [
-                    { star: "五星", maps: ["天空之城"] },
-                    { star: "四星", maps: ["1號公路", "桃源劍閣", "新天鵝堡", "千戶苗寨", "疾風機場", "花落夏海", "秋之物語", "神都千古恆照", "極速航天城"] },
-                    { star: "三星", maps: ["希臘神殿", "極地冰鎮", "因特拉肯", "彩虹風車島", "龍門新春", "城市網吧", "廣寒仙境", "香波島", "月光之城", "冰雪企鵝島", "夜鳴沙都", "水行瑪雅", "電音夢工廠", "反向彩虹風車島", "星星火車站", "幻音城假日", "320冒險島", "阿爾法總部", "戀戀千陽", "科隆大教堂", "聆風鎮", "舊夢碼頭", "炎光王城", "霧山楓吟", "京華冬夢"] }
+                    { star: "★★★★★", maps: ["天空之城"] },
+                    { star: "★★★★", maps: ["1號公路", "桃源劍閣", "新天鵝堡", "千戶苗寨", "疾風機場", "花落夏海", "秋之物語", "神都千古恆照", "極速航天城"] },
+                    { star: "★★★", maps: ["希臘神殿", "極地冰鎮", "因特拉肯", "彩虹風車島", "龍門新春", "城市網吧", "廣寒仙境", "香波島", "月光之城", "冰雪企鵝島", "夜鳴沙都", "水行瑪雅", "電音夢工廠", "反向彩虹風車島", "星星火車站", "幻音城假日", "320冒險島", "阿爾法總部", "戀戀千陽", "科隆大教堂", "聆風鎮", "舊夢碼頭", "炎光王城", "霧山楓吟", "京華冬夢"] }
+                ]
+            },
+            nostalgia: {
+                name: "懷舊圖池",
+                pools: [
+                    { star: "★", maps: ["大壩", "狂鯊水世界", "酥脆奶油谷", "繁花巴比倫", "咕嚕星", "玄門幽谷", "英倫古堡", "鴨鴨水樂園", "糖果不夜城", "蜂之蜜語", "糖果樂園", "小豬部落", "失落遺跡"] }
                 ]
             }
         };
@@ -282,7 +322,6 @@
         let currentCategory = 'speedLeague';
         let isDrawing = false;
 
-        // 取得該圖池的所有地圖（帶星級資訊，格式為 "【星級】地圖名稱"）
         function getAllMapsWithStar(categoryKey) {
             let list = [];
             mapPools[categoryKey].pools.forEach(group => {
@@ -301,7 +340,7 @@
             buttons.forEach(btn => btn.classList.remove('active'));
             
             btnElement.classList.add('active');
-            document.getElementById("result").innerText = "已切換圖池，請抽圖！";
+            document.getElementById("result").innerText = "已切換圖池，請抽圖";
         }
 
         function drawMap() {
@@ -312,31 +351,32 @@
             const resultDiv = document.getElementById("result");
             const flatMaps = getAllMapsWithStar(currentCategory);
             
-            // 觸發淡入淡出：隱藏周圍 UI
+            // 進入抽圖模式：隱藏 UI 並將結果移至正中央
             container.classList.add("hide-ui");
+            document.body.classList.add("drawing");
             
             let count = 0;
             const interval = setInterval(() => {
                 const randomIndex = Math.floor(Math.random() * flatMaps.length);
                 const item = flatMaps[randomIndex];
-                resultDiv.innerText = `【${item.star}】${item.name}`;
+                resultDiv.innerHTML = `<div class="result-star">${item.star}</div><div class="result-map">${item.name}</div>`;
                 count++;
                 
                 if (count > 15) {
                     clearInterval(interval);
                     const finalItem = flatMaps[Math.floor(Math.random() * flatMaps.length)];
-                    resultDiv.innerText = `【${finalItem.star}】${finalItem.name}`;
+                    resultDiv.innerHTML = `<div class="result-star">${finalItem.star}</div><div class="result-map">${finalItem.name}</div>`;
                     
-                    // 停留 1 秒後，恢復顯示周圍 UI
+                    // 停留 1.2 秒後，帶有淡入效果恢復原狀
                     setTimeout(() => {
                         container.classList.remove("hide-ui");
+                        document.body.classList.remove("drawing");
                         isDrawing = false;
-                    }, 1000);
+                    }, 1200);
                 }
             }, 60);
         }
 
-        // 顯示所有地圖（完整呈現星級與你提供的排版）
         function showMapList() {
             const modal = document.getElementById("mapModal");
             const modalTitle = document.getElementById("modalTitle");
@@ -355,7 +395,7 @@
                 
                 const titleDiv = document.createElement("div");
                 titleDiv.className = "star-title";
-                titleDiv.innerText = `● ${group.star}`;
+                titleDiv.innerText = group.star;
                 
                 const mapsDiv = document.createElement("div");
                 mapsDiv.className = "star-maps";
