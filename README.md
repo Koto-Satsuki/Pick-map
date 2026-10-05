@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>遊戲地圖隨機抽取器</title>
+    <title>QQQQQQQQQQQQQQQQQQQQQQQQQ飛車抽圖</title>
     <style>
         * {
             box-sizing: border-box;
@@ -103,17 +103,17 @@
 <body>
 
     <div class="container">
-        <h1>🎮 遊戲地圖隨機抽取器</h1>
+        <h1>QQQQQQQQQQQQQQQQQQQQQQQQQ飛車抽圖</h1>
         
         <!-- 三大圖池切換按鈕 -->
         <div class="category-buttons">
-            <button class="cat-btn active" onclick="switchCategory('speedLeague', this)">🏁 競速賽聯賽圖池</button>
-            <button class="cat-btn" onclick="switchCategory('speedAll', this)">🌍 競速賽全圖圖池</button>
-            <button class="cat-btn" onclick="switchCategory('itemList', this)">🛡️ 道具賽聯賽圖池</button>
+            <button class="cat-btn active" onclick="switchCategory('speedLeague', this)">競速賽聯賽圖池</button>
+            <button class="cat-btn" onclick="switchCategory('speedAll', this)">全圖圖池</button>
+            <button class="cat-btn" onclick="switchCategory('itemList', this)">道具聯賽圖池</button>
         </div>
 
-        <div id="result">請點擊下方按鈕抽圖</div>
-        <button class="draw-btn" onclick="drawMap()">開始抽地圖！</button>
+        <div id="result">點擊下方按鈕抽圖</div>
+        <button class="draw-btn" onclick="drawMap()">Pick</button>
     </div>
 
     <script>
@@ -160,7 +160,7 @@
             const activeMaps = mapPools[currentCategory];
             
             if (!activeMaps || activeMaps.length === 0) {
-                resultDiv.innerText = "此圖池目前沒有地圖！";
+                resultDiv.innerText = "此圖池目前沒有地圖";
                 return;
             }
 
