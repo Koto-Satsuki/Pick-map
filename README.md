@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>遊戲地圖隨機抽取器</title>
+    <title>Maps</title>
     <!-- 引入 Google Fonts 的芫荽體 (Iansui) -->
     <link href="https://fonts.googleapis.com/css2?family=Iansui&display=swap" rel="stylesheet">
     <style>
@@ -11,16 +11,14 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Iansui', sans-serif !important;
         }
         body {
-            /* 這裡設定你的背景圖片網址。如果想換圖片，把網址換成你的圖片直鏈即可 */
+            /* 使用你提供的背景圖片 */
             background-image: url('https://i.meee.com.tw/sqDHUVl.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            
-            /* 套用芫荽體，並設定備用字體 */
-            font-family: 'Iansui', sans-serif;
             color: #ffffff;
             min-height: 100vh;
             display: flex;
@@ -31,32 +29,44 @@
             position: relative;
         }
         
-        /* 加上一層半透明深色遮罩，讓文字跟介面更清晰易讀 */
+        /* 半透明深色遮罩，完美襯托背景與介面 */
         body::before {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.65);
+            background: rgba(10, 10, 15, 0.7);
             z-index: -1;
         }
 
         .container {
             text-align: center;
-            background: rgba(20, 20, 30, 0.85);
+            background: rgba(18, 18, 26, 0.82);
             padding: 35px;
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             max-width: 650px;
             width: 100%;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
+            /* 支援淡入淡出的轉場動畫 */
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            opacity: 1;
         }
+
+        /* 隱藏 UI 時的平滑淡出動畫 */
+        .container.hide-ui > *:not(#result) {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
         h1 {
             margin-bottom: 20px;
-            font-size: 2rem;
+            font-size: 2.2rem;
             letter-spacing: 1px;
-            color: #f0f0f0;
+            color: #e2e8f0;
         }
+
         /* 三大分類按鈕排版 */
         .category-buttons {
             display: flex;
@@ -65,18 +75,17 @@
             margin-bottom: 20px;
         }
         .cat-btn {
-            background: rgba(255, 255, 255, 0.08);
-            color: #ddd;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.06);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.12);
             padding: 12px;
             font-size: 1.1rem;
-            font-family: 'Iansui', sans-serif;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
         }
         .cat-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.12);
             color: #fff;
         }
         .cat-btn.active {
@@ -86,22 +95,24 @@
             font-weight: bold;
         }
         
-        /* 結果顯示框 (拿掉所有發光特效) */
+        /* 結果顯示框 */
         #result {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             margin: 20px 0;
-            min-height: 70px;
+            min-height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #facc15; /* 改用乾淨的溫和黃色 */
+            color: #fbbf24; /* 溫潤的金黃色 */
             word-break: break-all;
             padding: 0 10px;
+            transition: opacity 0.3s ease;
         }
 
         /* 按鈕區群組 */
         .action-buttons {
             display: flex;
+            flex-direction: column;
             gap: 10px;
         }
 
@@ -112,11 +123,10 @@
             border: none;
             padding: 14px 20px;
             font-size: 1.2rem;
-            font-family: 'Iansui', sans-serif;
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s;
-            flex: 2;
+            width: 100%;
         }
         .draw-btn:hover {
             background: #1d4ed8;
@@ -124,89 +134,96 @@
 
         /* 顯示所有地圖按鈕 */
         .list-btn {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 14px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 12px 15px;
             font-size: 1.1rem;
-            font-family: 'Iansui', sans-serif;
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s;
-            flex: 1;
+            width: 100%;
         }
         .list-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
         }
 
-        /* 彈出視窗（顯示所有地圖的清單） */
+        /* 彈出視窗 */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             justify-content: center;
             align-items: center;
             z-index: 10;
         }
         .modal-content {
-            background: #1f1f2e;
+            background: #181824;
             padding: 30px;
             border-radius: 12px;
-            max-width: 500px;
+            max-width: 550px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
             text-align: left;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
         }
         .modal-content h2 {
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-            color: #facc15;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+            color: #fbbf24;
             text-align: center;
         }
-        .modal-content ul {
-            list-style-type: none;
-            padding: 0;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
+        /* 保留星級排版的清單區塊 */
+        .star-group {
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
         }
-        .modal-content li {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.95rem;
+        .star-title {
+            font-size: 1.1rem;
+            color: #60a5fa;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        .star-maps {
+            font-size: 1rem;
             color: #e2e8f0;
+            line-height: 1.5;
+            word-break: break-all;
         }
+
         .close-btn {
             margin-top: 20px;
-            background: #ef4444;
+            background: #dc2626;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 12px;
             width: 100%;
-            font-family: 'Iansui', sans-serif;
             font-size: 1.1rem;
             border-radius: 8px;
             cursor: pointer;
+            transition: background 0.2s;
         }
         .close-btn:hover {
-            background: #dc2626;
+            background: #b91c1c;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>🎮 遊戲地圖隨機抽取器</h1>
+    <div class="container" id="mainContainer">
+        <h1>Maps</h1>
         
         <!-- 三大圖池切換按鈕 -->
         <div class="category-buttons">
-            <button class="cat-btn active" onclick="switchCategory('speedLeague', this)">🏁 競速賽聯賽圖池</button>
-            <button class="cat-btn" onclick="switchCategory('speedAll', this)">🌍 競速賽全圖圖池</button>
-            <button class="cat-btn" onclick="switchCategory('itemList', this)">🛡️ 道具賽聯賽圖池</button>
+            <button class="cat-btn active" onclick="switchCategory('speedLeague', this)">競速聯賽圖池</button>
+            <button class="cat-btn" onclick="switchCategory('speedAll', this)">競速全圖</button>
+            <button class="cat-btn" onclick="switchCategory('itemList', this)">道具聯賽圖池</button>
         </div>
 
         <div id="result">請點擊下方按鈕抽圖</div>
@@ -217,51 +234,67 @@
         </div>
     </div>
 
-    <!-- 彈出視窗：顯示所有地圖 -->
+    <!-- 彈出視窗：顯示所有地圖（保留星級與原排版） -->
     <div id="mapModal" class="modal">
         <div class="modal-content">
             <h2 id="modalTitle">地圖清單</h2>
-            <ul id="modalMapList"></ul>
+            <div id="modalStarContainer"></div>
             <button class="close-btn" onclick="closeMapList()">關閉</button>
         </div>
     </div>
 
     <script>
+        // 資料結構：保留星級分類，方便顯示與抽圖
         const mapPools = {
             speedLeague: {
-                name: "競速賽聯賽圖池",
-                maps: [
-                    "極速空港", "山海畫境", "美洲大峽谷", "蘇格蘭場",
-                    "秋名山", "莫高窟", "亞特蘭蒂斯", "反向亞特蘭蒂斯", "老街工地", "赤城紅葉", "雪境裂淵", "火星基地", "西部礦山",
-                    "西湖", "長城", "1號公路", "TROY-零號試驗場", "千戶苗寨", "疾風機場", "決戰! 雪山之巔", "夢回古蜀", "極速航天城", "神都千古恆照", "流殤曲水", "端午競渡", "泰坦之巔", "雲湧天門", "心淵",
-                    "11城", "北海漁場", "TROY-熔煉車間", "一路向黔", "阿爾法總部", "決戰! 海濱之眼", "天宮尋夢", "特洛伊環城", "龍晶湖", "絕色江西", "霧山五行", "浪漫海濱", "夜遊瀟湘", "踏雪尋春", "貓夢浮屋", "天工水城"
+                name: "競速聯賽圖池",
+                pools: [
+                    { star: "七星", maps: ["極速空港", "山海畫境"] },
+                    { star: "六星", maps: ["美洲大峽谷", "蘇格蘭場"] },
+                    { star: "五星", maps: ["秋名山", "莫高窟", "亞特蘭蒂斯", "反向亞特蘭蒂斯", "老街工地", "赤城紅葉", "雪境裂淵", "火星基地", "西部礦山"] },
+                    { star: "四星", maps: ["西湖", "長城", "1號公路", "TROY-零號試驗場", "千戶苗寨", "疾風機場", "決戰! 雪山之巔", "夢回古蜀", "極速航天城", "神都千古恆照", "流殤曲水", "端午競渡", "泰坦之巔", "雲湧天門", "心淵"] },
+                    { star: "三星", maps: ["11城", "北海漁場", "TROY-熔煉車間", "一路向黔", "阿爾法總部", "決戰! 海濱之眼", "天宮尋夢", "特洛伊環城", "龍晶湖", "絕色江西", "霧山五行", "浪漫海濱", "夜遊瀟湘", "踏雪尋春", "貓夢浮屋", "天工水城"] }
                 ]
             },
             speedAll: {
-                name: "競速賽全圖圖池",
-                maps: [
-                    "極速空港", "山海畫境", "美洲大峽谷", "蘇格蘭場",
-                    "秋名山", "莫高窟", "亞特蘭蒂斯", "反向亞特蘭蒂斯", "哈比人之旅", "老街工地", "赤城紅葉", "雪境裂淵", "火星基地", "沁園春", "天空之城", "西部礦山",
-                    "西湖", "長城", "1號公路", "TROY-零號試驗場", "千戶苗寨", "疾風機場", "決戰! 雪山之巔", "夢回古蜀", "極速航天城", "神都千古恒照", "流殤曲水", "端午競渡", "泰坦之巔", "雲湧天門", "新天鵝堡", "秋之物語", "侏羅紀公園", "花落夏海", "綠野逐風", "桃源劍閣", "人魚島探險",
-                    "11城", "北海漁場", "TROY-熔煉車間", "一路向黔", "阿爾法總部", "決戰! 海濱之眼", "天宮尋夢", "超弦基地", "特洛伊環城", "龍晶湖", "絕色江西", "伊甸掠影", "霧山五行", "浪漫海濱", "夜遊瀟湘", "踏雪尋春", "反向11城", "月光之城", "時之沙", "情迷法蘭西", "廣寒仙境", "城市網咖", "極地冰鎮", "龍門新春", "洛杉磯", "冰雪企鵝島", "星星火車站", "夜鳴沙都", "電音夢工廠", "幻音城假日", "科隆大教堂", "星夢遊樂園", "炎光王城", "戀戀千陽", "雲遊天府", "霧山楓吟", "京華冬夢", "極星幻域", "黃河萬里奔流", "舊夢碼頭", "熔爐角鬥場", "雲夢澤", "一夢青花", "千年絲路", "時光紀念館", "雪地嘉年華", "沉睡森林", "我們戀愛吧", "雪地大冒險", "聆風鎮", "彩虹風車島", "反向彩虹風車島", "羅馬競技場", "極速列車", "燕子塢",
-                    "冰川滑雪場", "馬達加斯加", "法老金字塔", "山雪遊龍", "情迷愛琴海", "鵲橋仙境", "飛馳絲路", "霆城新港", "叢林派對", "序列中樞",
-                    "中國城", "老街管道",
-                    "大壩", "狂鯊水世界", "酥脆奶油谷", "繁花巴比倫", "咕嚕星", "玄門幽谷", "英倫古堡", "鴨鴨水樂園", "糖果不夜城", "蜂之蜜語", "糖果樂園", "小豬部落", "失落遺跡"
+                name: "競速全圖",
+                pools: [
+                    { star: "七星", maps: ["極速空港", "山海畫境"] },
+                    { star: "六星", maps: ["美洲大峽谷", "蘇格蘭場"] },
+                    { star: "五星", maps: ["秋名山", "莫高窟", "亞特蘭蒂斯", "反向亞特蘭蒂斯", "哈比人之旅", "老街工地", "赤城紅葉", "雪境裂淵", "火星基地", "沁園春", "天空之城", "西部礦山"] },
+                    { star: "四星", maps: ["西湖", "長城", "1號公路", "TROY-零號試驗場", "千戶苗寨", "疾風機場", "決戰! 雪山之巔", "夢回古蜀", "極速航天城", "神都千古恒照", "流殤曲水", "端午競渡", "泰坦之巔", "雲湧天門", "新天鵝堡", "秋之物語", "侏羅紀公園", "花落夏海", "綠野逐風", "桃源劍閣", "人魚島探險"] },
+                    { star: "三星", maps: ["11城", "北海漁場", "TROY-熔煉車間", "一路向黔", "阿爾法總部", "決戰! 海濱之眼", "天宮尋夢", "超弦基地", "特洛伊環城", "龍晶湖", "絕色江西", "伊甸掠影", "霧山五行", "浪漫海濱", "夜遊瀟湘", "踏雪尋春", "反向11城", "月光之城", "時之沙", "情迷法蘭西", "廣寒仙境", "城市網咖", "極地冰鎮", "龍門新春", "洛杉磯", "冰雪企鵝島", "星星火車站", "夜鳴沙都", "電音夢工廠", "幻音城假日", "科隆大教堂", "星夢遊樂園", "炎光王城", "戀戀千陽", "雲遊天府", "霧山楓吟", "京華冬夢", "極星幻域", "黃河萬里奔流", "舊夢碼頭", "熔爐角鬥場", "雲夢澤", "一夢青花", "千年絲路", "時光紀念館", "雪地嘉年華", "沉睡森林", "我們戀愛吧", "雪地大冒險", "聆風鎮", "彩虹風車島", "反向彩虹風車島", "羅馬競技場", "極速列車", "燕子塢"] },
+                    { star: "二星", maps: ["冰川滑雪場", "馬達加斯加", "法老金字塔", "山雪遊龍", "情迷愛琴海", "鵲橋仙境", "飛馳絲路", "霆城新港", "叢林派對", "序列中樞"] },
+                    { star: "一星", maps: ["中國城", "老街管道"] },
+                    { star: "懷舊", maps: ["大壩", "狂鯊水世界", "酥脆奶油谷", "繁花巴比倫", "咕嚕星", "玄門幽谷", "英倫古堡", "鴨鴨水樂園", "糖果不夜城", "蜂之蜜語", "糖果樂園", "小豬部落", "失落遺跡"] }
                 ]
             },
             itemList: {
-                name: "道具賽聯賽圖池",
-                maps: [
-                    "天空之城",
-                    "1號公路", "桃源劍閣", "新天鵝堡", "千戶苗寨", "疾風機場", "花落夏海", "秋之物語", "神都千古恆照", "極速航天城",
-                    "希臘神殿", "極地冰鎮", "因特拉肯", "彩虹風車島", "龍門新春", "城市網吧", "廣寒仙境", "香波島", "月光之城", "冰雪企鵝島", "夜鳴沙都", "水行瑪雅", "電音夢工廠", "反向彩虹風車島", "星星火車站", "幻音城假日", "320冒險島", "阿爾法總部", "戀戀千陽", "科隆大教堂", "聆風鎮", "舊夢碼頭", "炎光王城", "霧山楓吟", "京華冬夢"
+                name: "道具聯賽圖池",
+                pools: [
+                    { star: "五星", maps: ["天空之城"] },
+                    { star: "四星", maps: ["1號公路", "桃源劍閣", "新天鵝堡", "千戶苗寨", "疾風機場", "花落夏海", "秋之物語", "神都千古恆照", "極速航天城"] },
+                    { star: "三星", maps: ["希臘神殿", "極地冰鎮", "因特拉肯", "彩虹風車島", "龍門新春", "城市網吧", "廣寒仙境", "香波島", "月光之城", "冰雪企鵝島", "夜鳴沙都", "水行瑪雅", "電音夢工廠", "反向彩虹風車島", "星星火車站", "幻音城假日", "320冒險島", "阿爾法總部", "戀戀千陽", "科隆大教堂", "聆風鎮", "舊夢碼頭", "炎光王城", "霧山楓吟", "京華冬夢"] }
                 ]
             }
         };
 
         let currentCategory = 'speedLeague';
+        let isDrawing = false;
+
+        // 取得該圖池的所有地圖（帶星級資訊，格式為 "【星級】地圖名稱"）
+        function getAllMapsWithStar(categoryKey) {
+            let list = [];
+            mapPools[categoryKey].pools.forEach(group => {
+                group.maps.forEach(mapName => {
+                    list.push({ star: group.star, name: mapName });
+                });
+            });
+            return list;
+        }
 
         function switchCategory(categoryKey, btnElement) {
+            if (isDrawing) return;
             currentCategory = categoryKey;
             
             const buttons = document.querySelectorAll('.cat-btn');
@@ -272,37 +305,65 @@
         }
 
         function drawMap() {
+            if (isDrawing) return;
+            isDrawing = true;
+
+            const container = document.getElementById("mainContainer");
             const resultDiv = document.getElementById("result");
-            const activeMaps = mapPools[currentCategory].maps;
+            const flatMaps = getAllMapsWithStar(currentCategory);
+            
+            // 觸發淡入淡出：隱藏周圍 UI
+            container.classList.add("hide-ui");
             
             let count = 0;
             const interval = setInterval(() => {
-                const randomIndex = Math.floor(Math.random() * activeMaps.length);
-                resultDiv.innerText = activeMaps[randomIndex];
+                const randomIndex = Math.floor(Math.random() * flatMaps.length);
+                const item = flatMaps[randomIndex];
+                resultDiv.innerText = `【${item.star}】${item.name}`;
                 count++;
                 
-                if (count > 12) {
+                if (count > 15) {
                     clearInterval(interval);
-                    const finalIndex = Math.floor(Math.random() * activeMaps.length);
-                    resultDiv.innerText = activeMaps[finalIndex];
+                    const finalItem = flatMaps[Math.floor(Math.random() * flatMaps.length)];
+                    resultDiv.innerText = `【${finalItem.star}】${finalItem.name}`;
+                    
+                    // 停留 1 秒後，恢復顯示周圍 UI
+                    setTimeout(() => {
+                        container.classList.remove("hide-ui");
+                        isDrawing = false;
+                    }, 1000);
                 }
-            }, 50);
+            }, 60);
         }
 
-        // 顯示所有地圖的彈跳視窗
+        // 顯示所有地圖（完整呈現星級與你提供的排版）
         function showMapList() {
             const modal = document.getElementById("mapModal");
             const modalTitle = document.getElementById("modalTitle");
-            const modalMapList = document.getElementById("modalMapList");
+            const container = document.getElementById("modalStarContainer");
             
             const currentPool = mapPools[currentCategory];
-            modalTitle.innerText = `${currentPool.name}（共 ${currentPool.maps.length} 張）`;
+            let totalCount = 0;
+            currentPool.pools.forEach(g => totalCount += g.maps.length);
             
-            modalMapList.innerHTML = "";
-            currentPool.maps.forEach(map => {
-                const li = document.createElement("li");
-                li.innerText = map;
-                modalMapList.appendChild(li);
+            modalTitle.innerText = `${currentPool.name}（共 ${totalCount} 張）`;
+            
+            container.innerHTML = "";
+            currentPool.pools.forEach(group => {
+                const groupDiv = document.createElement("div");
+                groupDiv.className = "star-group";
+                
+                const titleDiv = document.createElement("div");
+                titleDiv.className = "star-title";
+                titleDiv.innerText = `● ${group.star}`;
+                
+                const mapsDiv = document.createElement("div");
+                mapsDiv.className = "star-maps";
+                mapsDiv.innerText = group.maps.join("、");
+                
+                groupDiv.appendChild(titleDiv);
+                groupDiv.appendChild(mapsDiv);
+                container.appendChild(groupDiv);
             });
             
             modal.style.display = "flex";
