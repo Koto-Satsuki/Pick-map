@@ -36,7 +36,7 @@
             z-index: -1;
         }
 
-        /* 左上角標題與分隔線 */
+        /* 左上角標題與分隔線（絕對不移動） */
         .top-header {
             position: absolute;
             top: 25px;
@@ -49,7 +49,7 @@
             letter-spacing: 1px;
         }
 
-        /* 穩定固定的主卡片：高度 420px，寬度 520px，使用 flex 穩固對齊 */
+        /* 介面向下延伸，高度改為 470px，內容上下展開 */
         .container {
             text-align: center;
             background: rgba(18, 18, 26, 0.85);
@@ -58,22 +58,12 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
             width: 520px;
-            height: 420px;
+            height: 470px;
             backdrop-filter: blur(8px);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
-        }
-
-        /* 抽圖時隱藏周圍 UI：使用 visibility: hidden 保留原本的高度空間，絕對不讓下方按鈕位移 */
-        .container.hide-ui h1,
-        .container.hide-ui .category-buttons,
-        .container.hide-ui .action-buttons {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity 0.15s ease;
         }
 
         h1 {
@@ -82,14 +72,12 @@
             color: #e2e8f0;
             height: 30px;
             line-height: 30px;
-            transition: opacity 0.15s ease;
         }
 
         .category-buttons {
             display: flex;
             flex-direction: column;
             gap: 6px;
-            transition: opacity 0.15s ease;
         }
 
         .cat-btn {
@@ -114,20 +102,20 @@
             font-weight: bold;
         }
         
-        /* 結果顯示區塊：固定高度，抽圖時透過單純放大字體來呈現效果 */
+        /* 抽圖結果區塊：固定高度，抽圖時透過動畫平滑放大到正中央視覺 */
         #result {
-            height: 90px;
+            height: 110px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             color: #fbbf24;
             padding: 0 10px;
-            transition: transform 0.2s ease;
+            transition: transform 0.3s ease;
         }
 
         .container.drawing-mode #result {
-            transform: scale(1.2);
+            transform: scale(1.15);
         }
 
         .fade-in {
@@ -157,7 +145,6 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            transition: opacity 0.15s ease;
         }
 
         .draw-btn {
@@ -362,7 +349,7 @@
             const resultDiv = document.getElementById("result");
             const flatMaps = getAllMapsWithStar(currentCategory);
             
-            container.classList.add("hide-ui", "drawing-mode");
+            container.classList.add("drawing-mode");
             
             let count = 0;
             const interval = setInterval(() => {
@@ -378,7 +365,7 @@
                     resultDiv.innerHTML = `<div class="result-star">${finalItem.star}</div><div class="result-map">${finalItem.name}</div>`;
                     
                     setTimeout(() => {
-                        container.classList.remove("hide-ui", "drawing-mode");
+                        container.classList.remove("drawing-mode");
                         resultDiv.classList.remove("fade-in");
                         void resultDiv.offsetWidth;
                         resultDiv.classList.add("fade-in");
