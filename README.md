@@ -35,6 +35,8 @@
             background: rgba(10, 10, 15, 0.75);
             z-index: -1;
         }
+
+        /* 左上角標題與分隔線 */
         .top-header {
             position: absolute;
             top: 25px;
@@ -46,16 +48,20 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             letter-spacing: 1px;
         }
+
+        /* 外部總容器：容納主卡片與右側已抽過地圖欄位 */
         .app-wrapper {
             display: flex;
             gap: 25px;
             align-items: flex-start;
             margin-top: 40px;
         }
+
+        /* 主卡片容器 */
         .container {
             text-align: center;
             background: rgba(18, 18, 26, 0.85);
-            padding: 30px;
+            padding: 25px 30px;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -67,6 +73,8 @@
             justify-content: space-between;
             position: relative;
         }
+
+        /* ================= 抽圖模式（隱藏上下 UI，專注置中地圖） ================= */
         .container.drawing-mode h1,
         .container.drawing-mode .category-buttons,
         .container.drawing-mode .action-buttons,
@@ -76,6 +84,8 @@
             pointer-events: none;
             transition: opacity 0.2s ease;
         }
+
+        /* 元素過渡效果 */
         h1, .category-buttons, .action-buttons, .settings-panel {
             transition: opacity 0.2s ease;
         }
@@ -98,7 +108,7 @@
             background: rgba(255, 255, 255, 0.06);
             color: #cbd5e1;
             border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 7px;
+            padding: 6px;
             font-size: 0.95rem;
             border-radius: 6px;
             cursor: pointer;
@@ -115,24 +125,69 @@
             color: #fff;
             font-weight: bold;
         }
+        
+        /* ================= 質感滑動開關樣式 (Toggle Switch) ================= */
         .settings-panel {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column;
             gap: 8px;
-            font-size: 0.95rem;
-            color: #cbd5e1;
             background: rgba(255, 255, 255, 0.03);
-            padding: 6px;
-            border-radius: 6px;
+            padding: 10px 15px;
+            border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
-        .settings-panel input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-            accent-color: #2563eb;
+
+        .switch-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            color: #cbd5e1;
         }
+
+        .switch-container {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 22px;
+            cursor: pointer;
+        }
+
+        .switch-container input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 22px;
+            transition: 0.3s;
+        }
+
+        .slider::before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        input:checked + .slider {
+            background-color: #2563eb;
+        }
+
+        input:checked + .slider::before {
+            transform: translateX(22px);
+        }
+
+        /* 結果顯示區塊：抽圖時佔據正中央 */
         #result {
             flex-grow: 1;
             display: flex;
@@ -175,14 +230,14 @@
         .action-buttons {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
 
         .draw-btn {
             background: #2563eb;
             color: white;
             border: none;
-            padding: 11px 20px;
+            padding: 10px 20px;
             font-size: 1.05rem;
             border-radius: 8px;
             cursor: pointer;
@@ -197,7 +252,7 @@
             background: rgba(255, 255, 255, 0.08);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 9px 15px;
+            padding: 8px 15px;
             font-size: 0.95rem;
             border-radius: 8px;
             cursor: pointer;
@@ -207,6 +262,8 @@
         .list-btn:hover {
             background: rgba(255, 255, 255, 0.15);
         }
+
+        /* ================= 右側：抽過的地圖紀錄面板 ================= */
         .history-panel {
             background: rgba(18, 18, 26, 0.85);
             padding: 20px;
@@ -286,6 +343,8 @@
             margin-top: 150px;
             font-size: 1rem;
         }
+
+        /* 彈窗樣式 */
         .modal {
             display: none;
             position: fixed;
@@ -349,6 +408,8 @@
         .close-btn:hover {
             background: #b91c1c;
         }
+
+        /* 響應式：螢幕較小時上下堆疊 */
         @media (max-width: 860px) {
             .app-wrapper {
                 flex-direction: column;
@@ -362,6 +423,11 @@
     </style>
 </head>
 <body>
+
+    <!-- 使用 YouTube 官方嵌入 iframe 播放背景音樂 (設定隱藏或自動循環) -->
+    <div style="display:none;">
+        <iframe id="youtubeBgm" width="0" height="0" src="" title="YouTube audio player" frameborder="0" allow="autoplay"></iframe>
+    </div>
 
     <div class="top-header">pick-map</div>
 
@@ -378,9 +444,22 @@
                 <button class="cat-btn" onclick="switchCategory('nostalgia', this)">懷舊圖池</button>
             </div>
 
+            <!-- 滑動開關面板 -->
             <div class="settings-panel">
-                <input type="checkbox" id="noRepeatToggle">
-                <label for="noRepeatToggle">不允許重複結果</label>
+                <div class="switch-row">
+                    <span>音樂開關 (BGM)</span>
+                    <label class="switch-container">
+                        <input type="checkbox" id="musicToggle" onchange="toggleMusic()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="switch-row">
+                    <span>不允許重複結果</span>
+                    <label class="switch-container">
+                        <input type="checkbox" id="noRepeatToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
 
             <div id="result">點擊下方按鈕抽圖</div>
@@ -430,7 +509,7 @@
                     { star: "★★★★★★★", maps: ["極速空港", "山海畫境"] },
                     { star: "★★★★★★", maps: ["美洲大峽谷", "蘇格蘭場"] },
                     { star: "★★★★★", maps: ["秋名山", "莫高窟", "亞特蘭蒂斯", "反向亞特蘭蒂斯", "哈比人之旅", "老街工地", "赤城紅葉", "雪境裂淵", "火星基地", "沁園春", "天空之城", "西部礦山"] },
-                    { star: "★★★★", maps: ["西湖", "長城", "1號公路", "TROY-零號試驗場", "千戶苗寨", "疾風機場", "決戰! 雪山之巔", "夢回古蜀", "極速航天城", "神都千古恆照", "流殤曲水", "端午競渡", "泰坦之巔", "雲湧天門", "新天鵝堡", "秋之物語", "侏羅紀公園", "花落夏海", "綠野逐風", "桃源劍閣", "人魚島探險"] },
+                    { star: "★★★★", maps: ["西湖", "長城", "1號公路", "TROY-零號試驗場", "千戶苗寨", "疾風機場", "決戰! 雪山之巔", "夢回古蜀", "極速航天城", "神都千古恒照", "流殤曲水", "端午競渡", "泰坦之巔", "雲湧天門", "新天鵝堡", "秋之物語", "侏羅紀公園", "花落夏海", "綠野逐風", "桃源劍閣", "人魚島探險"] },
                     { star: "★★★", maps: ["11城", "北海漁場", "TROY-熔煉車間", "一路向黔", "阿爾法總部", "決戰! 海濱之眼", "天宮尋夢", "超弦基地", "特洛伊環城", "龍晶湖", "絕色江西", "伊甸掠影", "霧山五行", "浪漫海濱", "夜遊瀟湘", "踏雪尋春", "反向11城", "月光之城", "時之沙", "情迷法蘭西", "廣寒仙境", "城市網咖", "極地冰鎮", "龍門新春", "洛杉磯", "冰雪企鵝島", "星星火車站", "夜鳴沙都", "電音夢工廠", "幻音城假日", "科隆大教堂", "星夢遊樂園", "炎光王城", "戀戀千陽", "雲遊天府", "霧山楓吟", "京華冬夢", "極星幻域", "黃河萬里奔流", "舊夢碼頭", "熔爐角鬥場", "雲夢澤", "一夢青花", "千年絲路", "時光紀念館", "雪地嘉年華", "沉睡森林", "我們戀愛吧", "雪地大冒險", "聆風鎮", "彩虹風車島", "反向彩虹風車島", "羅馬競技場", "極速列車", "燕子塢"] },
                     { star: "★★", maps: ["冰川滑雪場", "馬達加斯加", "法老金字塔", "山雪遊龍", "情迷愛琴海", "鵲橋仙境", "飛馳絲路", "霆城新港", "叢林派對", "序列中樞"] },
                     { star: "★", maps: ["中國城", "老街管道"] }
@@ -454,8 +533,21 @@
 
         let currentCategory = 'speedLeague';
         let isDrawing = false;
-        // 儲存已抽過的地圖物件陣列：{ star: '...', name: '...' }
         let drawnHistory = [];
+
+        // 音樂開關切換邏輯 (YouTube 網址: https://www.youtube.com/watch?v=vINRuWtrPkg)
+        function toggleMusic() {
+            const isChecked = document.getElementById("musicToggle").checked;
+            const iframe = document.getElementById("youtubeBgm");
+            // 將 watch?v= 轉換為 embed/ 格式並加入 autoplay=1 參數
+            const ytEmbedUrl = "https://www.youtube.com/embed/vINRuWtrPkg?autoplay=1&loop=1&playlist=vINRuWtrPkg";
+
+            if (isChecked) {
+                iframe.src = ytEmbedUrl;
+            } else {
+                iframe.src = ""; // 清空網址即可停止音樂
+            }
+        }
 
         function getAllMapsWithStar(categoryKey) {
             let list = [];
@@ -488,14 +580,13 @@
             let availableMaps = getAllMapsWithStar(currentCategory);
             const noRepeat = document.getElementById("noRepeatToggle").checked;
 
-            // 如果開啟了「不允許重複結果」，過濾掉已經抽過的地圖
             if (noRepeat) {
                 const drawnNames = drawnHistory.map(item => item.name);
                 availableMaps = availableMaps.filter(item => !drawnNames.includes(item.name));
             }
 
             if (availableMaps.length === 0) {
-                alert("此圖池的地圖已經全數抽完，請清空紀錄或關閉「不允許重複結果」開關。");
+                alert("此圖池的地圖已經全數抽完了！請清空紀錄或關閉「不允許重複結果」開關。");
                 return;
             }
 
@@ -503,7 +594,6 @@
             const container = document.getElementById("mainContainer");
             const resultDiv = document.getElementById("result");
             
-            // 進入抽圖模式，隱藏上下 UI，地圖放大置中
             container.classList.add("drawing-mode");
             
             let count = 0;
@@ -519,7 +609,6 @@
                     
                     resultDiv.innerHTML = `<div class="result-star">${finalItem.star}</div><div class="result-map">${finalItem.name}</div>`;
                     
-                    // 將結果加入右側已抽過地圖紀錄中（避免重複加入）
                     if (!drawnHistory.some(item => item.name === finalItem.name)) {
                         drawnHistory.push(finalItem);
                         updateHistoryUI();
@@ -532,10 +621,9 @@
                         void resultDiv.offsetWidth;
                         resultDiv.classList.add("fade-in");
                         
-                        // 2 秒後將提示文字換回預設文字
                         resultDiv.innerText = "點擊下方按鈕抽圖";
                         isDrawing = false;
-                    }, 2000); //  2000 毫秒（2秒）
+                    }, 2000);
                 }
             }, 60);
         }
@@ -548,7 +636,6 @@
             }
 
             historyContainer.innerHTML = "";
-            // 倒序
             [...drawnHistory].reverse().forEach(item => {
                 const historyItem = document.createElement("div");
                 historyItem.className = "history-item";
