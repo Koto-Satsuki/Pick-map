@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
@@ -37,7 +36,20 @@
             z-index: -1;
         }
 
-        /* 寬度不變，高度變扁 (420px)，且大小絕對固定絕不跳動 */
+        /* 頂部標題與線條美化（解決重合問題） */
+        .top-header {
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-size: 1.8rem;
+            color: #60a5fa;
+            width: calc(100% - 60px);
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            letter-spacing: 1px;
+        }
+
+        /* 絕對固定的卡片外框 */
         .container {
             text-align: center;
             background: rgba(18, 18, 26, 0.85);
@@ -54,13 +66,10 @@
             position: relative;
         }
 
-        /* 抽圖時隱藏周圍 UI，但保留原本佔位空間，方框大小完全不變 */
+        /* 抽圖時用 display: none 徹底移除佔位，解決按鈕下移與位移問題 */
         .container.hide-ui h1,
-        .container.hide-ui .category-buttons,
-        .container.hide-ui .action-buttons {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.2s ease;
+        .container.hide-ui .category-buttons {
+            display: none !important;
         }
 
         h1 {
@@ -69,14 +78,12 @@
             color: #e2e8f0;
             height: 30px;
             line-height: 30px;
-            transition: opacity 0.2s ease;
         }
 
         .category-buttons {
             display: flex;
             flex-direction: column;
             gap: 6px;
-            transition: opacity 0.2s ease;
         }
         .cat-btn {
             background: rgba(255, 255, 255, 0.06);
@@ -99,21 +106,20 @@
             font-weight: bold;
         }
         
-        /* 結果顯示區塊：抽圖時放大字體與張力，同時維持在固定方框正中央 */
+        /* 結果顯示區塊 */
         #result {
-            height: 100px;
+            height: 120px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             color: #fbbf24;
             padding: 0 10px;
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            transition: transform 0.3s ease;
         }
 
-        /* 抽圖時讓結果區塊放大，更有視覺衝擊 */
         .container.drawing-mode #result {
-            transform: scale(1.25);
+            transform: scale(1.15);
         }
 
         .fade-in {
@@ -143,7 +149,6 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            transition: opacity 0.2s ease;
         }
 
         .draw-btn {
@@ -242,6 +247,8 @@
     </style>
 </head>
 <body>
+
+    <div class="top-header">pick-map</div>
 
     <div class="container" id="mainContainer">
         <h1>Maps</h1>
