@@ -36,7 +36,7 @@
             z-index: -1;
         }
 
-        /* 頂部標題與線條（向下推開，避免與線重合） */
+        /* 左上角標題與分隔線 */
         .top-header {
             position: absolute;
             top: 25px;
@@ -49,11 +49,11 @@
             letter-spacing: 1px;
         }
 
-        /* 絕對固定的卡片外框 */
+        /* 穩定固定的主卡片：高度 420px，寬度 520px，使用 flex 穩固對齊 */
         .container {
             text-align: center;
             background: rgba(18, 18, 26, 0.85);
-            padding: 20px 30px;
+            padding: 25px 30px;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -62,41 +62,41 @@
             backdrop-filter: blur(8px);
             display: flex;
             flex-direction: column;
-            align-items: center;
+            justify-content: space-between;
             position: relative;
         }
 
+        /* 抽圖時隱藏周圍 UI：使用 visibility: hidden 保留原本的高度空間，絕對不讓下方按鈕位移 */
+        .container.hide-ui h1,
+        .container.hide-ui .category-buttons,
+        .container.hide-ui .action-buttons {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.15s ease;
+        }
+
         h1 {
-            font-size: 1.6rem;
+            font-size: 1.7rem;
             letter-spacing: 1px;
             color: #e2e8f0;
-            margin-bottom: 15px;
             height: 30px;
             line-height: 30px;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.15s ease;
         }
 
         .category-buttons {
             display: flex;
             flex-direction: column;
             gap: 6px;
-            width: 100%;
-            margin-bottom: 15px;
-            transition: opacity 0.2s ease;
-        }
-
-        /* 抽圖時隱藏標題與分類，改用 visibility 佔位，保證下方按鈕絕對不會亂跳 */
-        .container.hide-ui h1,
-        .container.hide-ui .category-buttons {
-            opacity: 0;
-            visibility: hidden;
+            transition: opacity 0.15s ease;
         }
 
         .cat-btn {
             background: rgba(255, 255, 255, 0.06);
             color: #cbd5e1;
             border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 6px;
+            padding: 7px;
             font-size: 0.95rem;
             border-radius: 6px;
             cursor: pointer;
@@ -114,17 +114,16 @@
             font-weight: bold;
         }
         
-        /* 結果顯示區塊：固定高度，絕不位移 */
+        /* 結果顯示區塊：固定高度，抽圖時透過單純放大字體來呈現效果 */
         #result {
-            height: 100px;
-            width: 100%;
+            height: 90px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             color: #fbbf24;
-            margin-bottom: 15px;
-            transition: transform 0.3s ease;
+            padding: 0 10px;
+            transition: transform 0.2s ease;
         }
 
         .container.drawing-mode #result {
@@ -158,12 +157,7 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            width: 100%;
-            position: absolute;
-            bottom: 20px;
-            left: 30px;
-            right: 30px;
-            width: calc(100% - 60px);
+            transition: opacity 0.15s ease;
         }
 
         .draw-btn {
