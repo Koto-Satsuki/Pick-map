@@ -25,14 +25,14 @@
             align-items: center;
             padding: 20px;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
         }
         
         body::before {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10, 10, 15, 0.7);
+            background: rgba(10, 10, 15, 0.75);
             z-index: -1;
         }
 
@@ -49,6 +49,14 @@
             letter-spacing: 1px;
         }
 
+        /* 外部總容器：容納主卡片與右側已抽過地圖欄位 */
+        .app-wrapper {
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+            margin-top: 40px;
+        }
+
         /* 主卡片容器 */
         .container {
             text-align: center;
@@ -57,7 +65,7 @@
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 540px;
+            width: 500px;
             height: 520px;
             backdrop-filter: blur(8px);
             display: flex;
@@ -69,7 +77,8 @@
         /* ================= 抽圖模式（隱藏上下 UI，專注置中地圖） ================= */
         .container.drawing-mode h1,
         .container.drawing-mode .category-buttons,
-        .container.drawing-mode .action-buttons {
+        .container.drawing-mode .action-buttons,
+        .container.drawing-mode .settings-panel {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
@@ -77,21 +86,21 @@
         }
 
         /* 元素過渡效果 */
-        h1, .category-buttons, .action-buttons {
+        h1, .category-buttons, .action-buttons, .settings-panel {
             transition: opacity 0.2s ease;
         }
 
         h1 {
-            font-size: 1.7rem;
+            font-size: 1.6rem;
             letter-spacing: 1px;
             color: #e2e8f0;
-            height: 35px;
-            line-height: 35px;
+            height: 30px;
+            line-height: 30px;
         }
 
         .category-buttons {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 8px;
         }
 
@@ -99,8 +108,8 @@
             background: rgba(255, 255, 255, 0.06);
             color: #cbd5e1;
             border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 8px;
-            font-size: 1rem;
+            padding: 7px;
+            font-size: 0.95rem;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
@@ -117,6 +126,26 @@
             font-weight: bold;
         }
         
+        /* 設定開關面板：不重複抽圖 */
+        .settings-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .settings-panel input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #2563eb;
+        }
+
         /* 結果顯示區塊：抽圖時佔據正中央 */
         #result {
             flex-grow: 1;
@@ -131,7 +160,7 @@
         }
 
         .container.drawing-mode #result {
-            transform: scale(1.3);
+            transform: scale(1.35);
         }
 
         .fade-in {
@@ -167,8 +196,8 @@
             background: #2563eb;
             color: white;
             border: none;
-            padding: 12px 20px;
-            font-size: 1.1rem;
+            padding: 11px 20px;
+            font-size: 1.05rem;
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s;
@@ -182,8 +211,8 @@
             background: rgba(255, 255, 255, 0.08);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 10px 15px;
-            font-size: 1rem;
+            padding: 9px 15px;
+            font-size: 0.95rem;
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s;
@@ -191,6 +220,87 @@
         }
         .list-btn:hover {
             background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* ================= 右側：抽過的地圖紀錄面板 ================= */
+        .history-panel {
+            background: rgba(18, 18, 26, 0.85);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 320px;
+            height: 520px;
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .history-header h3 {
+            font-size: 1.15rem;
+            color: #60a5fa;
+        }
+
+        .clear-history-btn {
+            background: rgba(220, 38, 38, 0.2);
+            color: #f87171;
+            border: 1px solid rgba(220, 38, 38, 0.4);
+            padding: 4px 10px;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .clear-history-btn:hover {
+            background: #dc2626;
+            color: #fff;
+        }
+
+        .history-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-right: 4px;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border-left: 3px solid #fbbf24;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+
+        .history-item-name {
+            color: #f3f4f6;
+            font-weight: bold;
+        }
+
+        .history-item-star {
+            font-size: 0.8rem;
+            color: #60a5fa;
+            letter-spacing: 1px;
+        }
+
+        .history-empty {
+            color: #64748b;
+            text-align: center;
+            margin-top: 150px;
+            font-size: 1rem;
         }
 
         /* 彈窗樣式 */
@@ -257,30 +367,63 @@
         .close-btn:hover {
             background: #b91c1c;
         }
+
+        /* 響應式：螢幕較小時上下堆疊 */
+        @media (max-width: 860px) {
+            .app-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+            .history-panel {
+                width: 500px;
+                height: 350px;
+            }
+        }
     </style>
 </head>
 <body>
 
     <div class="top-header">pick-map</div>
 
-    <div class="container" id="mainContainer">
-        <h1>Maps</h1>
-        
-        <div class="category-buttons">
-            <button class="cat-btn active" onclick="switchCategory('speedLeague', this)">競速聯賽圖池</button>
-            <button class="cat-btn" onclick="switchCategory('speedAll', this)">競速全圖</button>
-            <button class="cat-btn" onclick="switchCategory('itemList', this)">道具聯賽圖池</button>
-            <button class="cat-btn" onclick="switchCategory('nostalgia', this)">懷舊圖池</button>
+    <!-- 外層容器包覆主卡片與右側抽過地圖紀錄 -->
+    <div class="app-wrapper">
+        <!-- 主卡片 -->
+        <div class="container" id="mainContainer">
+            <h1>Maps</h1>
+            
+            <div class="category-buttons">
+                <button class="cat-btn active" onclick="switchCategory('speedLeague', this)">競速聯賽圖池</button>
+                <button class="cat-btn" onclick="switchCategory('speedAll', this)">競速全圖</button>
+                <button class="cat-btn" onclick="switchCategory('itemList', this)">道具聯賽圖池</button>
+                <button class="cat-btn" onclick="switchCategory('nostalgia', this)">懷舊圖池</button>
+            </div>
+
+            <div class="settings-panel">
+                <input type="checkbox" id="noRepeatToggle">
+                <label for="noRepeatToggle">不允許重複結果（排除已抽過）</label>
+            </div>
+
+            <div id="result">點擊下方按鈕抽圖</div>
+            
+            <div class="action-buttons">
+                <button class="draw-btn" onclick="drawMap()">開始抽地圖</button>
+                <button class="list-btn" onclick="showMapList()">顯示所有地圖</button>
+            </div>
         </div>
 
-        <div id="result">點擊下方按鈕抽圖</div>
-        
-        <div class="action-buttons">
-            <button class="draw-btn" onclick="drawMap()">開始抽地圖</button>
-            <button class="list-btn" onclick="showMapList()">顯示所有地圖</button>
+        <!-- 右側：抽過的地圖紀錄面板 -->
+        <div class="history-panel">
+            <div class="history-header">
+                <h3>抽過的地圖</h3>
+                <button class="clear-history-btn" onclick="clearHistory()">清空紀錄</button>
+            </div>
+            <div class="history-list" id="historyListContainer">
+                <div class="history-empty">尚未抽取任何地圖</div>
+            </div>
         </div>
     </div>
 
+    <!-- 顯示所有地圖彈窗 -->
     <div id="mapModal" class="modal">
         <div class="modal-content">
             <h2 id="modalTitle">地圖清單</h2>
@@ -331,6 +474,8 @@
 
         let currentCategory = 'speedLeague';
         let isDrawing = false;
+        // 儲存已抽過的地圖物件陣列：{ star: '...', name: '...' }
+        let drawnHistory = [];
 
         function getAllMapsWithStar(categoryKey) {
             let list = [];
@@ -348,7 +493,6 @@
             
             const buttons = document.querySelectorAll('.cat-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
-            
             btnElement.classList.add('active');
             
             const resultDiv = document.getElementById("result");
@@ -360,42 +504,89 @@
 
         function drawMap() {
             if (isDrawing) return;
-            isDrawing = true;
 
+            let availableMaps = getAllMapsWithStar(currentCategory);
+            const noRepeat = document.getElementById("noRepeatToggle").checked;
+
+            // 如果開啟了「不允許重複結果」，過濾掉已經抽過的地圖
+            if (noRepeat) {
+                const drawnNames = drawnHistory.map(item => item.name);
+                availableMaps = availableMaps.filter(item => !drawnNames.includes(item.name));
+            }
+
+            if (availableMaps.length === 0) {
+                alert("此圖池的地圖已經全數抽完了！請清空紀錄或關閉「不允許重複結果」開關。");
+                return;
+            }
+
+            isDrawing = true;
             const container = document.getElementById("mainContainer");
             const resultDiv = document.getElementById("result");
-            const flatMaps = getAllMapsWithStar(currentCategory);
             
             // 進入抽圖模式：隱藏上下 UI，地圖放大置中
             container.classList.add("drawing-mode");
             
             let count = 0;
             const interval = setInterval(() => {
-                const randomIndex = Math.floor(Math.random() * flatMaps.length);
-                const item = flatMaps[randomIndex];
+                const randomIndex = Math.floor(Math.random() * availableMaps.length);
+                const item = availableMaps[randomIndex];
                 resultDiv.innerHTML = `<div class="result-star">${item.star}</div><div class="result-map">${item.name}</div>`;
                 count++;
                 
                 if (count > 15) {
                     clearInterval(interval);
-                    const finalItem = flatMaps[Math.floor(Math.random() * flatMaps.length)];
+                    const finalItem = availableMaps[Math.floor(Math.random() * availableMaps.length)];
                     
                     resultDiv.innerHTML = `<div class="result-star">${finalItem.star}</div><div class="result-map">${finalItem.name}</div>`;
                     
-                    // 抽圖結束後短暫停留，恢復介面與提示文字
+                    // 將結果加入右側已抽過地圖紀錄中（避免重複加入）
+                    if (!drawnHistory.some(item => item.name === finalItem.name)) {
+                        drawnHistory.push(finalItem);
+                        updateHistoryUI();
+                    }
+
+                    // 抽圖結束後停留在正中央顯示 2 秒
                     setTimeout(() => {
                         container.classList.remove("drawing-mode");
                         resultDiv.classList.remove("fade-in");
                         void resultDiv.offsetWidth;
                         resultDiv.classList.add("fade-in");
                         
-                        // 依照要求：抽圖結束後將提示文字換回預設文字
+                        // 2 秒後將提示文字換回預設文字
                         resultDiv.innerText = "點擊下方按鈕抽圖";
-                        
                         isDrawing = false;
-                    }, 600);
+                    }, 2000); // 這裡設定為 2000 毫秒（2秒）
                 }
             }, 60);
+        }
+
+        function updateHistoryUI() {
+            const historyContainer = document.getElementById("historyListContainer");
+            if (drawnHistory.length === 0) {
+                historyContainer.innerHTML = `<div class="history-empty">尚未抽取任何地圖</div>`;
+                return;
+            }
+
+            historyContainer.innerHTML = "";
+            // 倒序排列，讓最新抽到的顯示在最上面
+            [...drawnHistory].reverse().forEach(item => {
+                const historyItem = document.createElement("div");
+                historyItem.className = "history-item";
+                historyItem.innerHTML = `
+                    <span class="history-item-name">${item.name}</span>
+                    <span class="history-item-star">${item.star}</span>
+                `;
+                historyContainer.appendChild(historyItem);
+            });
+        }
+
+        function clearHistory() {
+            if (isDrawing) return;
+            if (drawnHistory.length === 0) return;
+            if (confirm("確定要清空所有抽過的地圖紀錄嗎？")) {
+                drawnHistory = [];
+                updateHistoryUI();
+            }
         }
 
         function showMapList() {
