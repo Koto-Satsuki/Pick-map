@@ -36,10 +36,10 @@
             z-index: -1;
         }
 
-        /* 頂部標題與線條美化（解決重合問題） */
+        /* 頂部標題與線條（向下推開，避免與線重合） */
         .top-header {
             position: absolute;
-            top: 20px;
+            top: 25px;
             left: 30px;
             font-size: 1.8rem;
             color: #60a5fa;
@@ -53,7 +53,7 @@
         .container {
             text-align: center;
             background: rgba(18, 18, 26, 0.85);
-            padding: 25px 30px;
+            padding: 20px 30px;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -62,38 +62,46 @@
             backdrop-filter: blur(8px);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            align-items: center;
             position: relative;
         }
 
-        /* 抽圖時用 display: none 徹底移除佔位，解決按鈕下移與位移問題 */
-        .container.hide-ui h1,
-        .container.hide-ui .category-buttons {
-            display: none !important;
-        }
-
         h1 {
-            font-size: 1.7rem;
+            font-size: 1.6rem;
             letter-spacing: 1px;
             color: #e2e8f0;
+            margin-bottom: 15px;
             height: 30px;
             line-height: 30px;
+            transition: opacity 0.2s ease;
         }
 
         .category-buttons {
             display: flex;
             flex-direction: column;
             gap: 6px;
+            width: 100%;
+            margin-bottom: 15px;
+            transition: opacity 0.2s ease;
         }
+
+        /* 抽圖時隱藏標題與分類，改用 visibility 佔位，保證下方按鈕絕對不會亂跳 */
+        .container.hide-ui h1,
+        .container.hide-ui .category-buttons {
+            opacity: 0;
+            visibility: hidden;
+        }
+
         .cat-btn {
             background: rgba(255, 255, 255, 0.06);
             color: #cbd5e1;
             border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 7px;
+            padding: 6px;
             font-size: 0.95rem;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
+            width: 100%;
         }
         .cat-btn:hover {
             background: rgba(255, 255, 255, 0.12);
@@ -106,20 +114,21 @@
             font-weight: bold;
         }
         
-        /* 結果顯示區塊 */
+        /* 結果顯示區塊：固定高度，絕不位移 */
         #result {
-            height: 120px;
+            height: 100px;
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             color: #fbbf24;
-            padding: 0 10px;
+            margin-bottom: 15px;
             transition: transform 0.3s ease;
         }
 
         .container.drawing-mode #result {
-            transform: scale(1.15);
+            transform: scale(1.2);
         }
 
         .fade-in {
@@ -149,6 +158,12 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
+            width: 100%;
+            position: absolute;
+            bottom: 20px;
+            left: 30px;
+            right: 30px;
+            width: calc(100% - 60px);
         }
 
         .draw-btn {
