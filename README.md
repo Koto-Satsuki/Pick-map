@@ -36,7 +36,7 @@
             z-index: -1;
         }
 
-        /* 左上角標題與分隔線（絕對不移動） */
+        /* 左上角標題與分隔線 */
         .top-header {
             position: absolute;
             top: 25px;
@@ -49,16 +49,16 @@
             letter-spacing: 1px;
         }
 
-        /* 介面向下延伸，高度改為 470px，內容上下展開 */
+        /* 穩定置中，內部空間向下延伸（高度 520px） */
         .container {
             text-align: center;
             background: rgba(18, 18, 26, 0.85);
-            padding: 25px 30px;
+            padding: 30px;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 520px;
-            height: 470px;
+            width: 540px;
+            height: 520px;
             backdrop-filter: blur(8px);
             display: flex;
             flex-direction: column;
@@ -66,26 +66,36 @@
             position: relative;
         }
 
+        /* 抽圖期間隱藏周圍 UI 元素，並讓地圖結果區塊置中放大 */
+        .container.drawing-mode .category-buttons,
+        .container.drawing-mode h1 {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease;
+        }
+
         h1 {
             font-size: 1.7rem;
             letter-spacing: 1px;
             color: #e2e8f0;
-            height: 30px;
-            line-height: 30px;
+            height: 35px;
+            line-height: 35px;
+            transition: opacity 0.2s ease;
         }
 
         .category-buttons {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
+            transition: opacity 0.2s ease;
         }
 
         .cat-btn {
             background: rgba(255, 255, 255, 0.06);
             color: #cbd5e1;
             border: 1px solid rgba(255, 255, 255, 0.12);
-            padding: 7px;
-            font-size: 0.95rem;
+            padding: 8px;
+            font-size: 1rem;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
@@ -102,9 +112,9 @@
             font-weight: bold;
         }
         
-        /* 抽圖結果區塊：固定高度，抽圖時透過動畫平滑放大到正中央視覺 */
+        /* 結果顯示區塊 */
         #result {
-            height: 110px;
+            height: 140px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -115,7 +125,7 @@
         }
 
         .container.drawing-mode #result {
-            transform: scale(1.15);
+            transform: scale(1.35);
         }
 
         .fade-in {
@@ -128,14 +138,14 @@
         }
 
         .result-star {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #60a5fa;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             font-weight: bold;
             letter-spacing: 2px;
         }
         .result-map {
-            font-size: 2rem;
+            font-size: 2.2rem;
             color: #fbbf24;
             word-break: break-all;
             line-height: 1.2;
@@ -144,15 +154,15 @@
         .action-buttons {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
 
         .draw-btn {
             background: #2563eb;
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 1.05rem;
+            padding: 12px 20px;
+            font-size: 1.1rem;
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s;
@@ -166,8 +176,8 @@
             background: rgba(255, 255, 255, 0.08);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 8px 15px;
-            font-size: 0.95rem;
+            padding: 10px 15px;
+            font-size: 1rem;
             border-radius: 8px;
             cursor: pointer;
             transition: background 0.2s;
@@ -335,7 +345,7 @@
             btnElement.classList.add('active');
             
             const resultDiv = document.getElementById("result");
-            resultDiv.innerText = "已切換圖池，請抽圖";
+            resultDiv.innerText = "點擊下方按鈕抽圖";
             resultDiv.classList.remove("fade-in");
             void resultDiv.offsetWidth;
             resultDiv.classList.add("fade-in");
