@@ -49,7 +49,7 @@
             letter-spacing: 1px;
         }
 
-        /* 穩定置中，內部空間向下延伸（高度 520px） */
+        /* 主卡片容器 */
         .container {
             text-align: center;
             background: rgba(18, 18, 26, 0.85);
@@ -66,11 +66,18 @@
             position: relative;
         }
 
-        /* 抽圖期間隱藏周圍 UI 元素，並讓地圖結果區塊置中放大 */
+        /* ================= 抽圖模式（隱藏上下 UI，專注置中地圖） ================= */
+        .container.drawing-mode h1,
         .container.drawing-mode .category-buttons,
-        .container.drawing-mode h1 {
+        .container.drawing-mode .action-buttons {
             opacity: 0;
             visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        /* 元素過渡效果 */
+        h1, .category-buttons, .action-buttons {
             transition: opacity 0.2s ease;
         }
 
@@ -80,14 +87,12 @@
             color: #e2e8f0;
             height: 35px;
             line-height: 35px;
-            transition: opacity 0.2s ease;
         }
 
         .category-buttons {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            transition: opacity 0.2s ease;
         }
 
         .cat-btn {
@@ -112,20 +117,21 @@
             font-weight: bold;
         }
         
-        /* 結果顯示區塊 */
+        /* 結果顯示區塊：抽圖時佔據正中央 */
         #result {
-            height: 140px;
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #fbbf24;
+            color: #94a3b8;
+            font-size: 1.2rem;
             padding: 0 10px;
             transition: transform 0.3s ease;
         }
 
         .container.drawing-mode #result {
-            transform: scale(1.35);
+            transform: scale(1.3);
         }
 
         .fade-in {
@@ -187,6 +193,7 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
+        /* 彈窗樣式 */
         .modal {
             display: none;
             position: fixed;
@@ -359,6 +366,7 @@
             const resultDiv = document.getElementById("result");
             const flatMaps = getAllMapsWithStar(currentCategory);
             
+            // 進入抽圖模式：隱藏上下 UI，地圖放大置中
             container.classList.add("drawing-mode");
             
             let count = 0;
@@ -374,13 +382,18 @@
                     
                     resultDiv.innerHTML = `<div class="result-star">${finalItem.star}</div><div class="result-map">${finalItem.name}</div>`;
                     
+                    // 抽圖結束後短暫停留，恢復介面與提示文字
                     setTimeout(() => {
                         container.classList.remove("drawing-mode");
                         resultDiv.classList.remove("fade-in");
                         void resultDiv.offsetWidth;
                         resultDiv.classList.add("fade-in");
+                        
+                        // 依照要求：抽圖結束後將提示文字換回預設文字
+                        resultDiv.innerText = "點擊下方按鈕抽圖";
+                        
                         isDrawing = false;
-                    }, 400);
+                    }, 600);
                 }
             }, 60);
         }
