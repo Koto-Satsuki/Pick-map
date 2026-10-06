@@ -35,8 +35,6 @@
             background: rgba(10, 10, 15, 0.75);
             z-index: -1;
         }
-
-        /* 左上角標題與分隔線 */
         .top-header {
             position: absolute;
             top: 25px;
@@ -48,16 +46,12 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             letter-spacing: 1px;
         }
-
-        /* 外部總容器：容納主卡片與右側已抽過地圖欄位 */
         .app-wrapper {
             display: flex;
             gap: 25px;
             align-items: flex-start;
             margin-top: 40px;
         }
-
-        /* 主卡片容器 */
         .container {
             text-align: center;
             background: rgba(18, 18, 26, 0.85);
@@ -73,8 +67,6 @@
             justify-content: space-between;
             position: relative;
         }
-
-        /* ================= 抽圖模式（隱藏上下 UI，專注置中地圖） ================= */
         .container.drawing-mode h1,
         .container.drawing-mode .category-buttons,
         .container.drawing-mode .action-buttons,
@@ -84,8 +76,6 @@
             pointer-events: none;
             transition: opacity 0.2s ease;
         }
-
-        /* 元素過渡效果 */
         h1, .category-buttons, .action-buttons, .settings-panel {
             transition: opacity 0.2s ease;
         }
@@ -125,8 +115,6 @@
             color: #fff;
             font-weight: bold;
         }
-        
-        /* 設定開關面板：不重複抽圖 */
         .settings-panel {
             display: flex;
             align-items: center;
@@ -145,8 +133,6 @@
             cursor: pointer;
             accent-color: #2563eb;
         }
-
-        /* 結果顯示區塊：抽圖時佔據正中央 */
         #result {
             flex-grow: 1;
             display: flex;
@@ -221,8 +207,6 @@
         .list-btn:hover {
             background: rgba(255, 255, 255, 0.15);
         }
-
-        /* ================= 右側：抽過的地圖紀錄面板 ================= */
         .history-panel {
             background: rgba(18, 18, 26, 0.85);
             padding: 20px;
@@ -302,8 +286,6 @@
             margin-top: 150px;
             font-size: 1rem;
         }
-
-        /* 彈窗樣式 */
         .modal {
             display: none;
             position: fixed;
@@ -367,8 +349,6 @@
         .close-btn:hover {
             background: #b91c1c;
         }
-
-        /* 響應式：螢幕較小時上下堆疊 */
         @media (max-width: 860px) {
             .app-wrapper {
                 flex-direction: column;
@@ -515,7 +495,7 @@
             }
 
             if (availableMaps.length === 0) {
-                alert("此圖池的地圖已經全數抽完了，請清空紀錄或關閉「不允許重複結果」開關。");
+                alert("此圖池的地圖已經全數抽完，請清空紀錄或關閉「不允許重複結果」開關。");
                 return;
             }
 
@@ -523,7 +503,7 @@
             const container = document.getElementById("mainContainer");
             const resultDiv = document.getElementById("result");
             
-            // 進入抽圖模式：隱藏上下 UI，地圖放大置中
+            // 進入抽圖模式，隱藏上下 UI，地圖放大置中
             container.classList.add("drawing-mode");
             
             let count = 0;
@@ -555,7 +535,7 @@
                         // 2 秒後將提示文字換回預設文字
                         resultDiv.innerText = "點擊下方按鈕抽圖";
                         isDrawing = false;
-                    }, 2000); // 這裡設定為 2000 毫秒（2秒）
+                    }, 2000); //  2000 毫秒（2秒）
                 }
             }, 60);
         }
@@ -568,7 +548,7 @@
             }
 
             historyContainer.innerHTML = "";
-            // 倒序排列，讓最新抽到的顯示在最上面
+            // 倒序
             [...drawnHistory].reverse().forEach(item => {
                 const historyItem = document.createElement("div");
                 historyItem.className = "history-item";
