@@ -36,7 +36,6 @@
             z-index: -1;
         }
 
-        /* 左上角標題與分隔線 */
         .top-header {
             position: absolute;
             top: 25px;
@@ -49,7 +48,6 @@
             letter-spacing: 1px;
         }
 
-        /* 外部總容器：容納主卡片與右側已抽過地圖欄位 */
         .app-wrapper {
             display: flex;
             gap: 25px;
@@ -57,7 +55,6 @@
             margin-top: 40px;
         }
 
-        /* 主卡片容器 */
         .container {
             text-align: center;
             background: rgba(18, 18, 26, 0.85);
@@ -74,7 +71,6 @@
             position: relative;
         }
 
-        /* ================= 抽圖模式（隱藏上下 UI，專注置中地圖） ================= */
         .container.drawing-mode h1,
         .container.drawing-mode .category-buttons,
         .container.drawing-mode .action-buttons,
@@ -85,7 +81,6 @@
             transition: opacity 0.2s ease;
         }
 
-        /* 元素過渡效果 */
         h1, .category-buttons, .action-buttons, .settings-panel {
             transition: opacity 0.2s ease;
         }
@@ -126,7 +121,6 @@
             font-weight: bold;
         }
         
-        /* ================= 質感滑動開關樣式 (Toggle Switch) ================= */
         .settings-panel {
             display: flex;
             flex-direction: column;
@@ -187,7 +181,6 @@
             transform: translateX(22px);
         }
 
-        /* 結果顯示區塊：抽圖時佔據正中央 */
         #result {
             flex-grow: 1;
             display: flex;
@@ -263,7 +256,6 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
-        /* ================= 右側：抽過的地圖紀錄面板 ================= */
         .history-panel {
             background: rgba(18, 18, 26, 0.85);
             padding: 20px;
@@ -344,7 +336,6 @@
             font-size: 1rem;
         }
 
-        /* 彈窗樣式 */
         .modal {
             display: none;
             position: fixed;
@@ -409,7 +400,6 @@
             background: #b91c1c;
         }
 
-        /* 響應式：螢幕較小時上下堆疊 */
         @media (max-width: 860px) {
             .app-wrapper {
                 flex-direction: column;
@@ -424,14 +414,12 @@
 </head>
 <body>
 
-    <!-- 使用 YouTube 官方嵌入 iframe 播放背景音樂 (設定隱藏或自動循環) -->
     <div style="display:none;">
         <iframe id="youtubeBgm" width="0" height="0" src="" title="YouTube audio player" frameborder="0" allow="autoplay"></iframe>
     </div>
 
     <div class="top-header">pick-map</div>
 
-    <!-- 外層容器包覆主卡片與右側抽過地圖紀錄 -->
     <div class="app-wrapper">
         <!-- 主卡片 -->
         <div class="container" id="mainContainer">
@@ -444,7 +432,6 @@
                 <button class="cat-btn" onclick="switchCategory('nostalgia', this)">懷舊圖池</button>
             </div>
 
-            <!-- 滑動開關面板 -->
             <div class="settings-panel">
                 <div class="switch-row">
                     <span>音樂開關 (BGM)</span>
@@ -470,7 +457,6 @@
             </div>
         </div>
 
-        <!-- 右側：抽過的地圖紀錄面板 -->
         <div class="history-panel">
             <div class="history-header">
                 <h3>抽過的地圖</h3>
@@ -482,7 +468,6 @@
         </div>
     </div>
 
-    <!-- 顯示所有地圖彈窗 -->
     <div id="mapModal" class="modal">
         <div class="modal-content">
             <h2 id="modalTitle">地圖清單</h2>
@@ -509,7 +494,7 @@
                     { star: "★★★★★★★", maps: ["極速空港", "山海畫境"] },
                     { star: "★★★★★★", maps: ["美洲大峽谷", "蘇格蘭場"] },
                     { star: "★★★★★", maps: ["秋名山", "莫高窟", "亞特蘭蒂斯", "反向亞特蘭蒂斯", "哈比人之旅", "老街工地", "赤城紅葉", "雪境裂淵", "火星基地", "沁園春", "天空之城", "西部礦山"] },
-                    { star: "★★★★", maps: ["西湖", "長城", "1號公路", "TROY-零號試驗場", "千戶苗寨", "疾風機場", "決戰! 雪山之巔", "夢回古蜀", "極速航天城", "神都千古恒照", "流殤曲水", "端午競渡", "泰坦之巔", "雲湧天門", "新天鵝堡", "秋之物語", "侏羅紀公園", "花落夏海", "綠野逐風", "桃源劍閣", "人魚島探險"] },
+                    { star: "★★★★", maps: ["西湖", "長城", "1號公路", "TROY-零號試驗場", "千戶苗寨", "疾風機場", "決戰! 雪山之巔", "夢回古蜀", "極速航天城", "神都千古恆照", "流殤曲水", "端午競渡", "泰坦之巔", "雲湧天門", "新天鵝堡", "秋之物語", "侏羅紀公園", "花落夏海", "綠野逐風", "桃源劍閣", "人魚島探險"] },
                     { star: "★★★", maps: ["11城", "北海漁場", "TROY-熔煉車間", "一路向黔", "阿爾法總部", "決戰! 海濱之眼", "天宮尋夢", "超弦基地", "特洛伊環城", "龍晶湖", "絕色江西", "伊甸掠影", "霧山五行", "浪漫海濱", "夜遊瀟湘", "踏雪尋春", "反向11城", "月光之城", "時之沙", "情迷法蘭西", "廣寒仙境", "城市網咖", "極地冰鎮", "龍門新春", "洛杉磯", "冰雪企鵝島", "星星火車站", "夜鳴沙都", "電音夢工廠", "幻音城假日", "科隆大教堂", "星夢遊樂園", "炎光王城", "戀戀千陽", "雲遊天府", "霧山楓吟", "京華冬夢", "極星幻域", "黃河萬里奔流", "舊夢碼頭", "熔爐角鬥場", "雲夢澤", "一夢青花", "千年絲路", "時光紀念館", "雪地嘉年華", "沉睡森林", "我們戀愛吧", "雪地大冒險", "聆風鎮", "彩虹風車島", "反向彩虹風車島", "羅馬競技場", "極速列車", "燕子塢"] },
                     { star: "★★", maps: ["冰川滑雪場", "馬達加斯加", "法老金字塔", "山雪遊龍", "情迷愛琴海", "鵲橋仙境", "飛馳絲路", "霆城新港", "叢林派對", "序列中樞"] },
                     { star: "★", maps: ["中國城", "老街管道"] }
