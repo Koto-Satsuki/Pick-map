@@ -482,7 +482,7 @@
                 <div class="switch-row">
                     <span>不允許重複結果</span>
                     <label class="switch-container">
-                        <input type="checkbox" id="noRepeatToggle">
+                        <input type="checkbox" id="noRepeatToggle" onchange="toggleNoRepeat()">
                         <span class="slider"></span>
                     </label>
                 </div>
@@ -533,7 +533,7 @@
                     { star: "★★★★★★★", maps: ["極速空港", "山海畫境"] },
                     { star: "★★★★★★", maps: ["美洲大峽谷", "蘇格蘭場"] },
                     { star: "★★★★★", maps: ["秋名山", "莫高窟", "亞特蘭蒂斯", "反向亞特蘭蒂斯", "哈比人之旅", "老街工地", "赤城紅葉", "雪境裂淵", "火星基地", "沁園春", "天空之城", "西部礦山"] },
-                    { star: "★★★★", maps: ["西湖", "長城", "1號公路", "TROY-零號試驗場", "千戶苗寨", "疾風機場", "決戰! 雪山之巔", "夢回古蜀", "極速航天城", "神都千古恆照", "流殤曲水", "端午競渡", "泰坦之巔", "雲湧天門", "新天鵝堡", "秋之物語", "侏羅紀公園", "花落夏海", "綠野逐風", "桃源劍閣", "人魚島探險"] },
+                    { star: "★★★★", maps: ["西湖", "長城", "1號公路", "TROY-零號試驗場", "千戶苗寨", "疾風機場", "決戰! 雪山之巔", "夢回古蜀", "極速航天城", "神都千古恒照", "流殤曲水", "端午競渡", "泰坦之巔", "雲湧天門", "新天鵝堡", "秋之物語", "侏羅紀公園", "花落夏海", "綠野逐風", "桃源劍閣", "人魚島探險"] },
                     { star: "★★★", maps: ["11城", "北海漁場", "TROY-熔煉車間", "一路向黔", "阿爾法總部", "決戰! 海濱之眼", "天宮尋夢", "超弦基地", "特洛伊環城", "龍晶湖", "絕色江西", "伊甸掠影", "霧山五行", "浪漫海濱", "夜遊瀟湘", "踏雪尋春", "反向11城", "月光之城", "時之沙", "情迷法蘭西", "廣寒仙境", "城市網咖", "極地冰鎮", "龍門新春", "洛杉磯", "冰雪企鵝島", "星星火車站", "夜鳴沙都", "電音夢工廠", "幻音城假日", "科隆大教堂", "星夢遊樂園", "炎光王城", "戀戀千陽", "雲遊天府", "霧山楓吟", "京華冬夢", "極星幻域", "黃河萬里奔流", "舊夢碼頭", "熔爐角鬥場", "雲夢澤", "一夢青花", "千年絲路", "時光紀念館", "雪地嘉年華", "沉睡森林", "我們戀愛吧", "雪地大冒險", "聆風鎮", "彩虹風車島", "反向彩虹風車島", "羅馬競技場", "極速列車", "燕子塢"] },
                     { star: "★★", maps: ["冰川滑雪場", "馬達加斯加", "法老金字塔", "山雪遊龍", "情迷愛琴海", "鵲橋仙境", "飛馳絲路", "霆城新港", "叢林派對", "序列中樞"] },
                     { star: "★", maps: ["中國城", "老街管道"] }
@@ -557,7 +557,17 @@
 
         let currentCategory = 'speedLeague';
         let isDrawing = false;
-        let drawnHistory = [];
+
+        let appData = JSON.parse(localStorage.getItem('pickMapData')) || {
+            speedLeague: { history: [], noRepeat: false },
+            speedAll: { history: [], noRepeat: false },
+            itemList: { history: [], noRepeat: false },
+            nostalgia: { history: [], noRepeat: false }
+        };
+
+        function saveAppData() {
+            localStorage.setItem('pickMapData', JSON.stringify(appData));
+        }
 
         function toggleMusic() {
             const isChecked = document.getElementById("musicToggle").checked;
@@ -569,6 +579,12 @@
             } else {
                 iframe.src = "";
             }
+        }
+
+        function toggleNoRepeat() {
+            const isChecked = document.getElementById("noRepeatToggle").checked;
+            appData[currentCategory].noRepeat = isChecked;
+            saveAppData();
         }
 
         function getAllMapsWithStar(categoryKey) {
@@ -588,6 +604,9 @@
             const buttons = document.querySelectorAll('.cat-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
+
+            document.getElementById("noRepeatToggle").checked = appData[currentCategory].noRepeat;
+            updateHistoryUI();
             
             const resultDiv = document.getElementById("result");
             resultDiv.innerText = "點擊下方按鈕抽圖";
@@ -600,10 +619,10 @@
             if (isDrawing) return;
 
             let availableMaps = getAllMapsWithStar(currentCategory);
-            const noRepeat = document.getElementById("noRepeatToggle").checked;
+            const currentData = appData[currentCategory];
 
-            if (noRepeat) {
-                const drawnNames = drawnHistory.map(item => item.name);
+            if (currentData.noRepeat) {
+                const drawnNames = currentData.history.map(item => item.name);
                 availableMaps = availableMaps.filter(item => !drawnNames.includes(item.name));
             }
 
@@ -631,10 +650,11 @@
                     
                     resultDiv.innerHTML = `<div class="result-star">${finalItem.star}</div><div class="result-map">${finalItem.name}</div>`;
                     
-                    if (!drawnHistory.some(item => item.name === finalItem.name)) {
-                        drawnHistory.push(finalItem);
-                        updateHistoryUI();
+                    if (!currentData.history.some(item => item.name === finalItem.name)) {
+                        currentData.history.push(finalItem);
+                        saveAppData();
                     }
+                    updateHistoryUI();
 
                     setTimeout(() => {
                         container.classList.remove("drawing-mode");
@@ -651,13 +671,15 @@
 
         function updateHistoryUI() {
             const historyContainer = document.getElementById("historyListContainer");
-            if (drawnHistory.length === 0) {
+            const currentHistory = appData[currentCategory].history;
+
+            if (currentHistory.length === 0) {
                 historyContainer.innerHTML = `<div class="history-empty">尚未抽取任何地圖</div>`;
                 return;
             }
 
             historyContainer.innerHTML = "";
-            [...drawnHistory].reverse().forEach(item => {
+            [...currentHistory].reverse().forEach(item => {
                 const historyItem = document.createElement("div");
                 historyItem.className = "history-item";
                 historyItem.innerHTML = `
@@ -670,9 +692,10 @@
 
         function clearHistory() {
             if (isDrawing) return;
-            if (drawnHistory.length === 0) return;
-            if (confirm("確定要清空所有抽過的地圖紀錄嗎？")) {
-                drawnHistory = [];
+            if (appData[currentCategory].history.length === 0) return;
+            if (confirm("確定要清空目前圖池的抽過地圖紀錄嗎？")) {
+                appData[currentCategory].history = [];
+                saveAppData();
                 updateHistoryUI();
             }
         }
@@ -712,6 +735,11 @@
         function closeMapList() {
             document.getElementById("mapModal").style.display = "none";
         }
+
+        window.onload = function() {
+            document.getElementById("noRepeatToggle").checked = appData[currentCategory].noRepeat;
+            updateHistoryUI();
+        };
     </script>
 
 </body>
