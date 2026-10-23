@@ -3,7 +3,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maps</title>
-    <!-- 引入 Google Fonts 的芫荽體 (Iansui) -->
     <link href="https://fonts.googleapis.com/css2?family=Iansui&display=swap" rel="stylesheet">
     <style>
         * {
@@ -36,7 +35,6 @@
             z-index: -1;
         }
 
-        /* 左上角標題與分隔線 */
         .top-header {
             position: absolute;
             top: 25px;
@@ -49,7 +47,6 @@
             letter-spacing: 1px;
         }
 
-        /* 外部總容器：電腦版為左右併排 */
         .app-wrapper {
             display: flex;
             gap: 25px;
@@ -58,7 +55,6 @@
             transition: all 0.3s ease;
         }
 
-        /* 主卡片容器 */
         .container {
             text-align: center;
             background: rgba(18, 18, 26, 0.85);
@@ -76,7 +72,6 @@
             transition: all 0.3s ease;
         }
 
-        /* ================= 抽圖模式（隱藏上下 UI，專注置中地圖） ================= */
         .container.drawing-mode h1,
         .container.drawing-mode .category-buttons,
         .container.drawing-mode .action-buttons,
@@ -87,7 +82,6 @@
             transition: opacity 0.2s ease;
         }
 
-        /* 元素過渡效果 */
         h1, .category-buttons, .action-buttons, .settings-panel {
             transition: opacity 0.2s ease;
         }
@@ -128,7 +122,6 @@
             font-weight: bold;
         }
         
-        /* ================= 滑動開關樣式 (Toggle Switch) ================= */
         .settings-panel {
             display: flex;
             flex-direction: column;
@@ -189,7 +182,6 @@
             transform: translateX(22px);
         }
 
-        /* 結果顯示區塊：抽圖時佔據正中央 */
         #result {
             flex-grow: 1;
             display: flex;
@@ -265,7 +257,6 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
-        /* ================= 右側：抽過的地圖紀錄面板 ================= */
         .history-panel {
             background: rgba(18, 18, 26, 0.85);
             padding: 20px;
@@ -347,7 +338,6 @@
             font-size: 1rem;
         }
 
-        /* 彈窗樣式 */
         .modal {
             display: none;
             position: fixed;
@@ -412,11 +402,10 @@
             background: #b91c1c;
         }
 
-        /* ================= 📱 手機版 RWD 自動切換 ================= */
         @media (max-width: 860px) {
             body {
                 padding: 15px 10px;
-                overflow-y: auto; /* 手機版允許上下滑動 */
+                overflow-y: auto;
             }
 
             .top-header {
@@ -429,7 +418,7 @@
             }
 
             .app-wrapper {
-                flex-direction: column; /* 改為上下垂直排列 */
+                flex-direction: column;
                 align-items: center;
                 margin-top: 0;
                 width: 100%;
@@ -437,14 +426,14 @@
             }
 
             .container {
-                width: 92vw; /* 自適應手機螢幕寬度 */
+                width: 92vw;
                 max-width: 450px;
                 height: 480px;
                 padding: 20px;
             }
 
             .history-panel {
-                width: 92vw; /* 自適應手機螢幕寬度 */
+                width: 92vw;
                 max-width: 450px;
                 height: 300px;
             }
@@ -454,27 +443,24 @@
             }
 
             .result-map {
-                font-size: 1.8rem; /* 手機版適度微調字體 */
+                font-size: 1.8rem;
             }
 
             .container.drawing-mode #result {
-                transform: scale(1.2); /* 手機版縮放微調防止超出 */
+                transform: scale(1.2);
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- 使用 YouTube 官方嵌入 iframe 播放背景音樂 -->
     <div style="display:none;">
         <iframe id="youtubeBgm" width="0" height="0" src="" title="YouTube audio player" frameborder="0" allow="autoplay"></iframe>
     </div>
 
     <div class="top-header">pick-map</div>
 
-    <!-- 外層容器包覆主卡片與右側抽過地圖紀錄 -->
     <div class="app-wrapper">
-        <!-- 主卡片 -->
         <div class="container" id="mainContainer">
             <h1>Maps</h1>
             
@@ -485,7 +471,6 @@
                 <button class="cat-btn" onclick="switchCategory('nostalgia', this)">懷舊圖池</button>
             </div>
 
-            <!-- 滑動開關面板 -->
             <div class="settings-panel">
                 <div class="switch-row">
                     <span>音樂開關 (BGM)</span>
@@ -511,7 +496,6 @@
             </div>
         </div>
 
-        <!-- 右側：抽過的地圖紀錄面板 -->
         <div class="history-panel">
             <div class="history-header">
                 <h3>抽過的地圖</h3>
@@ -523,7 +507,6 @@
         </div>
     </div>
 
-    <!-- 顯示所有地圖彈窗 -->
     <div id="mapModal" class="modal">
         <div class="modal-content">
             <h2 id="modalTitle">地圖清單</h2>
@@ -576,7 +559,6 @@
         let isDrawing = false;
         let drawnHistory = [];
 
-        // 音樂開關切換邏輯
         function toggleMusic() {
             const isChecked = document.getElementById("musicToggle").checked;
             const iframe = document.getElementById("youtubeBgm");
@@ -654,7 +636,6 @@
                         updateHistoryUI();
                     }
 
-                    // 抽圖結束後停留在正中央顯示 2 秒
                     setTimeout(() => {
                         container.classList.remove("drawing-mode");
                         resultDiv.classList.remove("fade-in");
